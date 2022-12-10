@@ -23,6 +23,9 @@ while True:
         username = utils.text_input(game_display, clock)
         client.server_connect(username)
 
+    if not client.que.empty():
+        print(client.que.get())
+
     for event in events:
         if event.type == pygame.QUIT:
             pygame.quit()
