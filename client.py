@@ -3,19 +3,20 @@ import json
 import threading
 import queue
 
-HOST = "127.0.0.1"
+HOST = "127.0.0.2"
 PORT = 3333
 FORMAT = "utf-8"
 
 
 class NetworkClient(socket.socket):
+
     def __init__(self):
         self.que = queue.Queue()
         self.listener = threading.Thread(target=self.recv_in_process)
         self.running: bool = True
         super().__init__(socket.AF_INET, socket.SOCK_STREAM)
 
-    def server_connect(self, name: str, host: str = "127.0.0.1", port: int = 3333):
+    def server_connect(self, name: str, host: str = "127.0.0.2", port: int = 3333):
         self.connect((host, port))
         self.send(name.encode())
         self.listener.start()
@@ -26,8 +27,10 @@ class NetworkClient(socket.socket):
 
     def recv_from_server(self):
         data = self.recv(1024).decode()
-        data = json.loads(data)
-        print(data)
+        try:
+            data = json.loads(data)
+        except json.decoder.JSONDecodeError:
+            pass
         return data
 
     def recv_in_process(self):

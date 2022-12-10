@@ -8,7 +8,7 @@ ENCODING = "utf-8"
 
 
 class NetworkServer(socket.socket):
-    def __init__(self, host: str = "127.0.0.1", port: int = 3333):
+    def __init__(self, host: str = "127.0.0.2", port: int = 3333):
         self.clients: Dict = {}
 
         super().__init__(socket.AF_INET, socket.SOCK_STREAM)
@@ -25,9 +25,10 @@ class NetworkServer(socket.socket):
                 "name": name,
                 "connection": conn
             }
-            print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount}")
+            print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount} ({addr[0]}:{addr[1]})")
+            print(self.clients)
 
-    def send_all(self, command: str, data: str):
+    def send_all(self, command: str, **data):
         for addr in self.clients:
             jso = {"command": command,
                    "to": self.clients[addr]["name"]}
@@ -45,10 +46,12 @@ class NetworkServer(socket.socket):
                "to": self.clients[addr]["name"]}
 
         if data:
-            for key, value in data:
+            for key, value in data.items():
                 jso[key] = value
 
-        self.clients[addr]["connection"].send(json.dumps(jso).encode(ENCODING))
+        string_data = json.dumps(jso)
+
+        self.clients[addr]["connection"].send(string_data.encode(ENCODING))
 
     def receive(self, addr: str):
         if addr not in self.clients:

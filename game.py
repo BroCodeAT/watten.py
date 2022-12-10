@@ -20,4 +20,8 @@ while playing:
                 player[player_name]["cards"].append(deal_cards)
             except KeyError:
                 player[player_name] = {"cards": deal_cards}
-            server.send_to("NEW_CARD", client, cards=deal_cards)
+            server.send_to("NEW_CARD", client, cards=list(map(int, deal_cards)))
+
+    server.send_all("SO_LOS_GEHTS")
+
+    input("Debug")
