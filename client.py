@@ -1,4 +1,5 @@
 import socket
+import json
 
 HOST = "127.0.0.1"
 PORT = 3333
@@ -13,9 +14,14 @@ class NetworkClient(socket.socket):
         self.connect((host, port))
         self.send(name.encode())
 
-    def send_to_server(self,msg: str):
+    def send_to_server(self, msg: str):
         to_send = msg.encode(FORMAT)
         self.send(to_send)
+
+    def recv_from_server(self):
+        data = self.recv(1024).decode()
+        data = json.loads(data)
+        print(data)
 
 
 if __name__ == '__main__':
