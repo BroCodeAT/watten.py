@@ -1,5 +1,7 @@
 import socket
 
+HOST = "127.0.0.1"
+PORT = 3333
 
 class NetworkClient(socket.socket):
     def __init__(self):
@@ -13,4 +15,4 @@ class NetworkClient(socket.socket):
 if __name__ == '__main__':
     client = NetworkClient()
     username = input("Please enter your name: ")
-    client.server_connect(username)
+    client.server_connect(username, host=HOST, port=PORT)

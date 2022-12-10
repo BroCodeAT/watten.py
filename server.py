@@ -1,6 +1,8 @@
 import socket
 from typing import Dict
 
+HOST = "127.0.0.1"
+PORT = 3333
 
 class NetworkServer(socket.socket):
     def __init__(self, host: str = "127.0.0.1", port: int = 3333):
@@ -24,7 +26,7 @@ class NetworkServer(socket.socket):
 
 
 if __name__ == '__main__':
-    server = NetworkServer()
+    server = NetworkServer(host=HOST, port=PORT)
     server.accept_clients()
 
 
