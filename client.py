@@ -2,7 +2,7 @@ import socket
 
 HOST = "127.0.0.1"
 PORT = 3333
-FORMAT = "UTF-8"
+FORMAT = "utf-8"
 
 class NetworkClient(socket.socket):
     def __init__(self):
