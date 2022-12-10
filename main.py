@@ -10,7 +10,10 @@ pygame.init()
 background = pygame.image.load(r"cards\background.png")
 
 game_display = pygame.display.set_mode((1000, 700))
+clock = pygame.time.Clock()
 pygame.display.set_caption("Watten")
+# Pygame now allows natively to enable key repeat:
+pygame.key.set_repeat(200, 25)
 
 username_input = utils.UsernameInputField()
 
@@ -29,5 +32,6 @@ while True:
         elif username_input and event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
             username = username_input.input_field.value
             username_input = None
-            
+
     pygame.display.update()
+    clock.tick(60)
