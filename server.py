@@ -1,4 +1,5 @@
 import socket
+import json
 from typing import Dict
 
 HOST = "127.0.0.1"
@@ -26,15 +27,28 @@ class NetworkServer(socket.socket):
             }
             print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount}")
 
-    def send_all(self, data: str):
+    def send_all(self, command: str, data: str):
         for addr in self.clients:
-            self.clients[addr]["connection"].send(data.encode(ENCODING))
+            jso = {"command": command,
+                   "to": self.clients[addr]["name"]}
 
-    def send_to(self, data: str, addr: str):
+            if data:
+                for key, value in data:
+                    jso[key] = value
+
+            self.clients[addr]["connection"].send(json.dumps(jso).encode(ENCODING))
+
+    def send_to(self, command: str, addr: str, **data):
         if addr not in self.clients:
             return None
+        jso = {"command": command,
+               "to": self.clients[addr]["name"]}
 
-        self.clients[addr]["connection"].send(data.encode(ENCODING))
+        if data:
+            for key, value in data:
+                jso[key] = value
+
+        self.clients[addr]["connection"].send(json.dumps(jso).encode(ENCODING))
 
     def receive(self, addr: str):
         if addr not in self.clients:
