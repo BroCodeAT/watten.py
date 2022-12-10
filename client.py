@@ -1,6 +1,7 @@
 import socket
 import json
-import multiprocessing
+import threading
+import queue
 
 HOST = "127.0.0.1"
 PORT = 3333
@@ -9,8 +10,8 @@ FORMAT = "utf-8"
 
 class NetworkClient(socket.socket):
     def __init__(self):
-        self.que = multiprocessing.Queue()
-        self.listener: multiprocessing.Process = multiprocessing.Process(target=self.recv_in_process)
+        self.que = queue.Queue()
+        self.listener = threading.Thread(target=self.recv_in_process)
         self.running: bool = True
         super().__init__(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -34,10 +35,3 @@ class NetworkClient(socket.socket):
             recv = self.recv_from_server()
             self.que.put(recv)
 
-
-if __name__ == '__main__':
-    client = NetworkClient()
-    username = input("Please enter your name: ")
-    client.server_connect(username, host=HOST, port=PORT)
-
-    client.send_to_server("test 1234")
