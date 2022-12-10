@@ -22,4 +22,4 @@ if __name__ == '__main__':
     username = input("Please enter your name: ")
     client.server_connect(username, host=HOST, port=PORT)
     
-    client.send("test 1234")
+    client.send_to_server("test 1234")
