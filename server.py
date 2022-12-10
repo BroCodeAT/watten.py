@@ -46,5 +46,3 @@ class NetworkServer(socket.socket):
 if __name__ == '__main__':
     server = NetworkServer(host=HOST, port=PORT)
     server.accept_clients()
-
-

@@ -4,6 +4,7 @@ HOST = "127.0.0.1"
 PORT = 3333
 FORMAT = "utf-8"
 
+
 class NetworkClient(socket.socket):
     def __init__(self):
         super().__init__(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,5 +22,5 @@ if __name__ == '__main__':
     client = NetworkClient()
     username = input("Please enter your name: ")
     client.server_connect(username, host=HOST, port=PORT)
-    
+
     client.send_to_server("test 1234")

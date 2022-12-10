@@ -1,4 +1,7 @@
 import pygame
+from client import NetworkClient
+
+client = NetworkClient()
 
 pygame.init()
 
