@@ -8,8 +8,7 @@ class UsernameInputField():
         self.input_field = pygame_textinput.TextInputVisualizer(manager=manager)
 
         self.input_field.cursor_blink_interval = 400
-        self.input_field.antialias = False
-        self.input_field.value = "WWWWWWWWWWWWW"
+        self.input_field.value = "Username"
         
         
 
