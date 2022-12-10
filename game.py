@@ -17,6 +17,6 @@ while playing:
             deal_cards = card_dek.deal_top_card(cards)
             try:
                 player[server.clients[client]["name"]]["cards"].append(deal_cards)
-            except ValueError:
+            except KeyError:
                 player[server.clients[client]["name"]] = {"cards": deal_cards}
             server.send_to("NEW_CARD", client, cards=deal_cards)
