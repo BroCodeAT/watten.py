@@ -8,6 +8,8 @@ server.accept_clients()
 card_dek: CardDek | None = None
 player: dict = {}
 
+playing = True
+
 while playing:
     card_dek = CardDek.get_mixed_dek()
     for cards in [3, 2]:
