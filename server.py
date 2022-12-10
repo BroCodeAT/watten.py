@@ -1,22 +1,30 @@
 import socket
-
-SERVER = "127.0.0.1"
-PORT = 12345
-
-try:
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    print("socket created")
-
-    s.bind((SERVER, PORT)) 
-    print("socket connecting this port: {} ".format(PORT))
-
-    s.listen(4)      
-    print("socket listening")
-
-except socket.error as msg:
-    print("err :",msg)
+from typing import Dict
 
 
-while True:
-    conn, addr = s.accept()
+class NetworkServer(socket.socket):
+    def __init__(self, host: str = "127.0.0.1", port: int = 3333):
+        self.clients: Dict[socket.socket] = {}
+
+        super().__init__(socket.AF_INET, socket.SOCK_STREAM)
+        print(f"[{'LISTENING':<10}] Bound to the port: {host}:{port}")
+        self.bind((host, port))
+
+    def accept_clients(self, amount: int = 4):
+        self.listen(4)
+        for i in range(amount):
+            conn, addr = self.accept()
+
+            name = conn.recv(1024).decode()
+            self.clients[addr] = {
+                "name": name,
+                "connection": conn
+            }
+            print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount}")
+
+
+if __name__ == '__main__':
+    server = NetworkServer()
+    server.accept_clients()
+
 
