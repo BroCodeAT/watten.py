@@ -12,10 +12,9 @@ class NetworkClient(socket.socket):
         self.connect((host, port))
         self.send(name.encode())
 
-    def send(self,msg: str):
+    def send_to_server(self,msg: str):
         to_send = msg.encode(FORMAT)
         self.send(to_send)
-
 
 
 if __name__ == '__main__':
