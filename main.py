@@ -32,6 +32,7 @@ while True:
         elif username_input and event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
             username = username_input.input_field.value
             username_input = None
+            client.server_connect(username)
 
     pygame.display.update()
     clock.tick(60)
