@@ -1,12 +1,13 @@
-from server import NetworkServer
-from cards import *
 import json
+
+from cards import *
+from server import NetworkServer
 
 server = NetworkServer()
 server.accept_clients()
 
 card_dek: CardDek | None = None
-player: dict[str,dict[str,list]] = {}
+player: dict[str, dict[str, list]] = {}
 
 playing = True
 

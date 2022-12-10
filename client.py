@@ -1,7 +1,7 @@
-import socket
 import json
-import threading
 import queue
+import socket
+import threading
 
 HOST = "127.0.0.2"
 PORT = 3333

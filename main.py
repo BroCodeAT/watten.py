@@ -1,7 +1,7 @@
 import pygame
-from client import NetworkClient
-import utils
 
+import utils
+from client import NetworkClient
 
 client = NetworkClient()
 username: str = ""

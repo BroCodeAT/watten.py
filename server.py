@@ -1,5 +1,5 @@
-import socket
 import json
+import socket
 from typing import Dict
 
 HOST = "127.0.0.1"

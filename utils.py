@@ -1,6 +1,6 @@
+import sys
 import pygame
 from typing import List
-import sys
 
 
 def draw_text(text, color, surface: pygame.Surface, x, y, text_size=30):
