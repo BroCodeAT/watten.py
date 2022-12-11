@@ -6,7 +6,7 @@ server = NetworkServer()
 server.accept_clients()
 
 card_dek: CardDek | None = None
-player: dict = {}
+player: dict[str,dict[str,list]] = {}
 
 playing = True
 
