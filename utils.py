@@ -58,4 +58,12 @@ def text_input(screen: pygame.Surface, clock: pygame.time.Clock):
 
         pygame.display.update()
         clock.tick(60)
-        
+
+
+def load_card_image(card_ids:list[int]) -> list[pygame.Surface]:
+    surfaces: list = []
+    for card_id in card_ids:
+        surface = pygame.image.load(fr"cards\id_{card_id}.png")
+        surface = pygame.transform.scale(surface,(100,170))
+        surfaces.append(surface)
+    return surfaces
