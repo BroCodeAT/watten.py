@@ -18,7 +18,7 @@ while playing:
             deal_cards = card_dek.deal_top_card(cards)
             player_name = server.clients[client]["name"]
             try:
-                player[player_name]["cards"].append(deal_cards)
+                player[player_name]["cards"].extend(deal_cards)
             except KeyError:
                 player[player_name] = {"cards": deal_cards}
             server.send_to("NEW_CARD", client, cards=list(map(int, deal_cards)))

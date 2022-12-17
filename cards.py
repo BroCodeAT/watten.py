@@ -150,7 +150,7 @@ class CardDek:
     def __len__(self):
         return len(self.cards)
 
-    def deal_top_card(self, cards=1):
+    def deal_top_card(self, cards=1) -> list[CardBase]:
         """
         Return an amount of cards and delete them from the deck
 
