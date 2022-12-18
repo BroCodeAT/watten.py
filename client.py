@@ -35,5 +35,6 @@ class NetworkClient(socket.socket):
     def recv_in_process(self):
         while self.running:
             recv = self.recv_from_server()
-            self.que.put(recv)
+            if recv:
+                self.que.put(recv)
 
