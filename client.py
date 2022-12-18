@@ -28,10 +28,9 @@ class NetworkClient(socket.socket):
     def recv_from_server(self):
         data = self.recv(1024).decode()
         try:
-            data = json.loads(data)
+            return json.loads(data)
         except json.decoder.JSONDecodeError:
             pass
-        return data
 
     def recv_in_process(self):
         while self.running:
