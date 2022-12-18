@@ -35,7 +35,9 @@ while playing:
     for client in server.clients:
         player_name = server.clients[client]["name"]
         cards_to_send = player[player_name]["cards"]
-        server.send_to("PLAYER_NAMES", client, players=list(player)[list(player).index(player_name):] + list(player)[:list(player).index(player_name)])
+        player_list = list(player)
+        player_index = player_list.index(player_name)
+        server.send_to("PLAYER_NAMES", client, players=player_list[player_index:] + player_list[:player_index])
 
         server.send_to("NEW_CARD", client, cards=list(map(int, cards_to_send)))
 
