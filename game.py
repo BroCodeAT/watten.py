@@ -13,7 +13,7 @@ playing = True
 
 while playing:
     card_dek = CardDek.get_mixed_dek()
-    #dealing cards
+    # dealing cards
     for cards in [3, 2]:
         for client in server.clients:
             deal_cards = card_dek.deal_top_card(cards)
@@ -23,7 +23,7 @@ while playing:
             except KeyError:
                 player[player_name] = {"cards": deal_cards}
 
-    #sending cards to clients
+    # sending cards to clients
     for client in server.clients:
         player_name = server.clients[client]["name"]
         cards_to_send = player[player_name]["cards"]
