@@ -52,6 +52,9 @@ def text_input(screen: pygame.Surface, clock: pygame.time.Clock):
                     sys.exit()
                 elif event.key == pygame.K_BACKSPACE:
                     username = username[:-1]
+                elif event.key == pygame.K_RETURN:
+                    if username:
+                        return username
                 else:
                     if len(username) < 14:
                         username += event.unicode
