@@ -29,7 +29,7 @@ while True:
         recv: dict = client.que.get()
         print(recv)
 
-        match recv.get(command):
+        match recv.get("command"):
             case "NEW_CARD":
                 card_ids: list[int] = recv.get("cards")
                 card_surfaces = utils.load_card_image(card_ids)
