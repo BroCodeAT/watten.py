@@ -60,10 +60,27 @@ def text_input(screen: pygame.Surface, clock: pygame.time.Clock):
         clock.tick(60)
 
 
-def load_card_image(card_ids: list[int]) -> list[pygame.Surface]:
-    surfaces: list = []
+def load_card_image(player_names: list[str], card_ids: list[int]) -> dict[str,list[pygame.Surface]]:
+    own_cards: list = []
     for card_id in card_ids:
-        surface = pygame.image.load(fr"cards\id_{card_id}.png")
-        surface = pygame.transform.scale(surface, (100, 170))
-        surfaces.append(surface)
-    return surfaces
+        own_card = pygame.image.load(fr"cards\id_{card_id}.png")
+        own_card = pygame.transform.scale(own_card, (100, 170))
+        own_cards.append(own_card)
+
+    card_back = pygame.image.load(r"cards\card_back.png")
+    card_back = pygame.transform.scale(card_back, (100, 170))    
+    card_back_rot = pygame.transform.rotate(card_back, 90)
+
+    card_backsides: list = []
+    for i in range(5):
+        card_backsides.append(card_back)
+
+    card_backsides_rot:list = []
+    for i in range(5):
+        card_backsides_rot.append(card_back_rot)
+
+    player_cards_surfaces: dict = { player_names[0]:own_cards,
+                                    player_names[1]:card_backsides_rot,
+                                    player_names[2]:card_backsides,
+                                    player_names[3]:card_backsides_rot}
+    return player_cards_surfaces
