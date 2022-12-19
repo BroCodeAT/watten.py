@@ -50,6 +50,7 @@ class NetworkServer(socket.socket):
 
         string_data = json.dumps(jso)
 
+        print(string_data)
         self.clients[addr]["connection"].send(string_data.encode(ENCODING))
 
     def receive(self, addr: str):

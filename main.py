@@ -8,7 +8,7 @@ username: str = ""
 
 pygame.init()
 background = pygame.image.load(r"cards\background.png")
-card_surfaces: list[pygame.Surface] = []
+player_cards_surfaces = {}
 
 game_display = pygame.display.set_mode((1000, 700))
 clock = pygame.time.Clock()
@@ -30,15 +30,25 @@ while True:
         print(recv)
 
         match recv.get("command"):
+            case "PLAYER_NAMES":
+                player_names: list[str] = recv.get("players")
+
             case "NEW_CARD":
                 card_ids: list[int] = recv.get("cards")
-                card_surfaces = utils.load_card_image(card_ids)
+                player_cards_surfaces = utils.load_card_image(player_names, card_ids)
 
-    if card_surfaces:
-        x_start = 225
-        for card_surface in card_surfaces:
-            game_display.blit(card_surface, (x_start, 480))
-            x_start += 110
+
+    if player_cards_surfaces.values():
+        # [[x_start, x_step, y_start, y_step],...]
+        player_card_coordinates = [[0,225,110,480,0], [1,-85,0,125,110], [2,225,110,-85,0], [3,915,0,125,110]]
+        
+        for player, x_start, x_step, y_start, y_step in player_card_coordinates:
+
+            for card_surface in player_cards_surfaces.get(player_names[player]):
+                game_display.blit(card_surface, (x_start, y_start))
+                x_start += x_step
+                y_start += y_step
+
 
     for event in events:
         if event.type == pygame.QUIT:
