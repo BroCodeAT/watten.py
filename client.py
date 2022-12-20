@@ -52,9 +52,7 @@ class NetworkClient:
         while self.running:
             recv = self.recv_from_server()
             if recv:
-                print(type(recv))
                 if isinstance(recv, list):
-                    print("list")
                     for com in recv:
                         self.que.put(com)
                     return
