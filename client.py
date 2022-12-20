@@ -17,7 +17,7 @@ class NetworkClient:
         self.listener = multiprocessing.Process(target=self.recv_in_process)
         self.running: bool = True
 
-    def server_connect(self, name: str, host: str = "127.0.0.2", port: int = 3333):
+    def server_connect(self, name: str, host: str = "127.0.0.2", port: int = 3333) -> bool:
         self.server.connect((host, port))
         with self.lock:
             self.server.send(name.encode())
@@ -25,6 +25,10 @@ class NetworkClient:
         if resp.get("command") == "CONNECTED":
             if resp.get("name") == name:
                 self.listener.start()
+                return True
+        elif resp.get("command") == "CONNECTION_REFUSED":
+            self.server.close()
+            return False
 
     def send_to_server(self, msg: str):
         to_send = msg.encode(FORMAT)
