@@ -22,7 +22,6 @@ class NetworkClient:
         with self.lock:
             self.server.send(name.encode())
         resp = self.recv_from_server()
-        print(resp)
         if resp.get("command") == "CONNECTED":
             if resp.get("name") == name:
                 self.listener.start()
@@ -35,15 +34,28 @@ class NetworkClient:
     def recv_from_server(self):
         with self.lock:
             data = self.server.recv(1024).decode()
-        print("data:", data)
         try:
             return json.loads(data)
         except json.decoder.JSONDecodeError:
-            pass
+            commands = []
+            commands_len = data.count("command")
+            # Remove first and last { / } to be sure to add the {,} afterwards in the for loop
+            partial_commands = data[1:-1].split("}{")
+            if len(partial_commands) == commands_len:
+                for command in partial_commands:
+                    # Add the {, } to the command again to make sure it is json loadable
+                    commands.append(json.loads("{" + command + "}"))
+            return commands
 
     def recv_in_process(self):
         time.sleep(5)
         while self.running:
             recv = self.recv_from_server()
             if recv:
+                print(type(recv))
+                if isinstance(recv, list):
+                    print("list")
+                    for com in recv:
+                        self.que.put(com)
+                    return
                 self.que.put(recv)
