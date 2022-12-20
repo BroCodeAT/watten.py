@@ -10,6 +10,9 @@
 - to: str → Name of the Client to send the Command to
 - name: str → The Name of the Client that is now connected
 
+### CONNECTION_REFUSE
+    There is already a Client connected with the given name
+
 
 ### NEW_CARD
     The Client Receives new Cards
