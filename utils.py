@@ -1,6 +1,7 @@
 import sys
 import pygame
 from typing import List
+from cards import CardBase
 
 
 def draw_text(text, color, surface: pygame.Surface, x, y, text_size=30):
@@ -61,6 +62,14 @@ def text_input(screen: pygame.Surface, clock: pygame.time.Clock):
 
         pygame.display.update()
         clock.tick(60)
+
+
+def check_available(player_cards: List[CardBase], already_played: List[CardBase], highest: CardBase, know: bool = True):
+    if already_played[0] == highest:
+        playable = [card for card in player_cards if card == highest]
+        if playable:
+            return playable
+    return player_cards
 
 
 def load_card_image(player_names: list[str], card_ids: list[int]) -> dict[str,list[pygame.Surface]]:
