@@ -41,9 +41,9 @@ if __name__ == '__main__':
             # [[x_start, x_step, y_start, y_step],...]
             player_card_coordinates = [
                 [0, 225, 110, 480, 0],
-                [1, -85, 0, 125, 110],
-                [2, 225, 110, -85, 0],
-                [3, 915, 0, 125, 110]]
+                [1, -85, 0, 100, 80],
+                [2, 290, 80, -85, 0],
+                [3, 915, 0, 100, 80]]
 
             for player, x_start, x_step, y_start, y_step in player_card_coordinates:
 
