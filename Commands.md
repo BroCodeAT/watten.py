@@ -4,6 +4,13 @@
 
 ---
 
+### CONNECTION
+    The Client is Connected Sucessfully
+**Attributes:**
+- to: str → Name of the Client to send the Command to
+- name: str → The Name of the Client that is now connected
+
+
 ### NEW_CARD
     The Client Receives new Cards
 **Attributes:**
@@ -16,5 +23,12 @@
 **Attributes:**
 - to: str → Name of the Client to send the Command to
 - players: list[str] → The List of the Names of the Players (to is first)
+
+### PLAYER_TURN
+    A Client has to play a card
+
+**Attributes:**
+- to: str → Name of the Client to send the Command to
+- available: list[int] → The List of the Cards the Player can play
 
 # Client to Server
