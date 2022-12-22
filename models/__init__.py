@@ -4,5 +4,6 @@ from .game import GameData, ClientGameData
 __all__ = [
     "CardBase",
     "CardDek",
-    "GameData"
+    "GameData",
+    "ClientGameData"
 ]
