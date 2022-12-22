@@ -97,7 +97,7 @@ class ClientLogic:
         #     [3, 915, 0, 100, 80]
         #     ]
 
-        rects = [pygame.Rect(225, 560, 550, 60), pygame.Rect(230, 100, 60, 340), pygame.Rect(290, 95, 340, 60), pygame.Rect(825, 100, 60, 340)]
+        rects = [pygame.Rect(225, 420, 520, 60), pygame.Rect(230, 100, 60, 340), pygame.Rect(290, 95, 340, 60), pygame.Rect(825, 100, 60, 340)]
         texts = [pygame.font.Font(None, 50).render(self.game_data.player_names[0], True, (255, 255, 255)),
                  pygame.font.Font(None, 50).render(self.game_data.player_names[1], True, (255, 255, 255)),
                  pygame.font.Font(None, 50).render(self.game_data.player_names[2], True, (255, 255, 255)),
