@@ -1,7 +1,6 @@
 import time
 
-from common.cards import *
-from common.game import GameData
+from models import GameData
 from network import NetworkServer
 
 
@@ -35,7 +34,6 @@ class GameLogic:
         self.server.send_all("SO_LOS_GEHTS")
 
         input("Debug")
-
 
     def deal_round(self):
         # Dealing the cards to the client (serverside)

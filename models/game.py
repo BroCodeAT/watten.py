@@ -1,4 +1,4 @@
-from models import CardDek
+from . import CardDek
 
 
 class GameData:
