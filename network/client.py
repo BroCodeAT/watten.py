@@ -38,7 +38,6 @@ class NetworkClient:
             self.server.send(to_send)
 
     def recv_from_server(self):
-        print("Recv")
         with self.lock:
             data = self.server.recv(1024).decode()
         print(data)
