@@ -23,5 +23,5 @@ class GameData:
 
         self.highest: CardBase | None = None
 
-    def start(self):
+    def mixed_dek(self):
         self.card_dek = CardDek.get_mixed_dek()

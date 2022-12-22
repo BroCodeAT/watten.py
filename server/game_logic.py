@@ -25,8 +25,6 @@ class GameLogic:
             self.start_new_point()
 
     def start_new_round(self):
-        self.game_data.start()
-
         while not (self.game_data.team1.get("points") >= 11 or self.game_data.team2.get("points") >= 11):
             self.start_for_new_points()
 
@@ -35,6 +33,7 @@ class GameLogic:
         input("Debug")
 
     def start_for_new_points(self):
+        self.game_data.mixed_dek()
         self.deal_round()
         input("DEBUG")
 
