@@ -1,5 +1,6 @@
 import json
 import socket
+import multiprocessing
 from typing import Dict
 
 HOST = "127.0.0.1"
@@ -10,6 +11,9 @@ ENCODING = "utf-8"
 class NetworkServer(socket.socket):
     def __init__(self, host: str = "127.0.0.2", port: int = 3333):
         self.clients: Dict = {}
+
+        self.que: multiprocessing.Queue = multiprocessing.Queue()
+        self.listeners: list[multiprocessing.Process] = []
 
         super().__init__(socket.AF_INET, socket.SOCK_STREAM)
         print(f"[{'LISTENING':<10}] Bound to the port: {host}:{port}")
@@ -62,7 +66,43 @@ class NetworkServer(socket.socket):
     def receive(self, name: str):
         if name not in self.clients:
             return None
+
         return self.clients[name]["connection"].receive().decode(ENCODING)
+
+    def receive_from_client(self, client):
+        data = self.receive(client)
+        try:
+            return json.loads(data)
+        except json.decoder.JSONDecodeError:
+            commands = []
+            commands_len = data.count("command")
+            # Remove first and last {,} to be sure to add the {,} afterwards in the for loop
+            partial_commands = data[1:-1].split("}{")
+            if len(partial_commands) == commands_len:
+                for command in partial_commands:
+                    # Add the {, } to the command again to make sure it is json loadable
+                    commands.append(json.loads("{" + command + "}"))
+            return commands
+
+    def allow_responses_from(self, *clients: str):
+        for client in clients:
+            self.listeners.append(multiprocessing.Process(target=self.wait_for_response, args=(client,)))
+            self.listeners[-1].start()
+
+    def stop_responses(self):
+        for listener in self.listeners:
+            listener.close()
+        self.listeners = []
+
+    def wait_for_response(self, client: str):
+        while self.running:
+            recv = self.receive_from_client(client)
+            if recv:
+                if isinstance(recv, list):
+                    for com in recv:
+                        self.que.put(com)
+                    return
+                self.que.put(recv)
 
 
 if __name__ == '__main__':

@@ -22,7 +22,7 @@ class GameLogic:
 
     def start_game_loop(self):
         while True:
-            self.start_new_point()
+            self.start_new_round()
 
     def start_new_round(self):
         while not (self.game_data.team1.get("points") >= 11 or self.game_data.team2.get("points") >= 11):
@@ -36,6 +36,7 @@ class GameLogic:
         self.game_data.mixed_dek()
         self.deal_round()
         self.get_highest()
+        self.ask_for_start()
 
         input("DEBUG")
 
@@ -59,12 +60,25 @@ class GameLogic:
 
     def get_highest(self, send: bool = True):
         self.game_data.highest = CardBase.new_card(
-            self.game_data.game_player[self.game_data.game_loop[-1]]["cards"][3].col,
-            self.game_data.game_player[self.game_data.game_loop[0]]["cards"][3].num
+            self.game_data.game_player[self.game_data.game_loop[-1]]["cards"][3].col(),
+            self.game_data.game_player[self.game_data.game_loop[0]]["cards"][3].num()
         )
         if send:
             self.server.send_to("HIGHEST", self.game_data.game_loop[-1], highest=int(self.game_data.highest))
             self.server.send_to("HIGHEST", self.game_data.game_loop[0], highest=int(self.game_data.highest))
+
+    def ask_for_start(self):
+        self.server.allow_responses_from(self.game_data.game_loop[0], self.game_data.game_loop[-1])
+        time.sleep(10)
+        self.server.stop_responses()
+        while self.server.que.not_empty:
+            self.handle_response(self.server.que.get())
+
+    def handle_response(self, data: dict):
+        print(data)
+        match data.get("command"):
+            case "BETTER_CARDS":
+                pass
 
     def better_cards(self):
         for cards in [3, 2]:
