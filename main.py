@@ -1,5 +1,5 @@
 from logic import ClientLogic
 
-game = ClientLogic()
-game.start_game_loop()
-
+if __name__ == '__main__':
+    game = ClientLogic()
+    game.start_game_loop()

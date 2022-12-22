@@ -1,4 +1,5 @@
 from logic import GameLogic
 
-game = GameLogic()
-game.start_game_loop()
+if __name__ == '__main__':
+    game = GameLogic()
+    game.start_game_loop()

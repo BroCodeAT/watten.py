@@ -1,3 +1,4 @@
+import os
 import json
 import time
 import socket
@@ -23,7 +24,7 @@ class NetworkClient:
             self.server.send(name.encode())
         resp = self.recv_from_server()
         if resp.get("command") == "CONNECTED":
-            if resp.get("name") == name:
+            if resp.get("to") == name:
                 self.listener.start()
                 return True
         elif resp.get("command") == "CONNECTION_REFUSED":
@@ -37,7 +38,9 @@ class NetworkClient:
             self.server.send(to_send)
 
     def recv_from_server(self):
-        data = self.server.recv(1024).decode()
+        print("Recv")
+        with self.lock:
+            data = self.server.recv(1024).decode()
         print(data)
         try:
             return json.loads(data)
