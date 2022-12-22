@@ -17,7 +17,7 @@ class ClientLogic:
 
         self.debug = debug
 
-        self.background = pygame.image.load(r"././cards/background.PNG")
+        self.background = pygame.image.load(r"client/cards/background.PNG")
 
         if auto_setup:
             self.setup()
