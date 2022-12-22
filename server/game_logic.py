@@ -24,17 +24,19 @@ class GameLogic:
         while True:
             self.start_new_point()
 
-    def start_new_point(self):
+    def start_new_round(self):
         self.game_data.start()
 
-        self.start_new_point()
+        while not (self.game_data.team1.get("points") >= 11 or self.game_data.team2.get("points") >= 11):
+            self.start_for_new_points()
 
         self.server.send_all("SO_LOS_GEHTS")
 
         input("Debug")
 
-    def start_new_round(self):
+    def start_for_new_points(self):
         self.deal_round()
+        input("DEBUG")
 
     def deal_round(self):
         # Dealing the cards to the client (serverside)
