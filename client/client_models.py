@@ -7,6 +7,7 @@ class ClientGameData:
         self.player_names: list[str] = []
 
         self.card_ids: list[int] = []
+        self.highlighted_pos: list[int] = []
 
         self.game_display = pygame.display.set_mode((1000, 700))
         self.player_cards_surfaces = {}

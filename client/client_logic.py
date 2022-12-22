@@ -66,6 +66,8 @@ class ClientLogic:
                     self.new_player_names(recv)
                 case "NEW_CARD":
                     self.new_cards(recv)
+                case "PLAYER_TURN":
+                    self.highlight_cards(recv)
 
     def view_events(self, events: list[pygame.event.Event]):
         for event in events:
@@ -75,7 +77,7 @@ class ClientLogic:
 
     def display_cards(self):
         if self.game_data.player_cards_surfaces.values():
-            # [[x_start, x_step, y_start, y_step],...]
+            # [[player_id , x_start, x_step, y_start, y_step],...]
             player_card_coordinates = [
                 [0, 225, 110, 480, 0],
                 [1, -85, 0, 100, 80],
@@ -84,6 +86,11 @@ class ClientLogic:
 
             for player, x_start, x_step, y_start, y_step in player_card_coordinates:
                 for card_surface in self.game_data.player_cards_surfaces.get(self.game_data.player_names[player]):
+                    if player == 0:
+                        if self.game_data.player_cards_surfaces.get(self.game_data.player_names[player]).index(card_surface) in self.game_data.highlighted_pos:
+                            x_start = 205
+                        else:
+                            x_start = 225
                     self.game_data.game_display.blit(card_surface, (x_start, y_start))
                     x_start += x_step
                     y_start += y_step
@@ -109,3 +116,10 @@ class ClientLogic:
     def new_cards(self, data: dict):
         self.game_data.card_ids = data.get("cards")
         self.game_data.player_cards_surfaces = utils.load_card_image(self.game_data.player_names, self.game_data.card_ids)
+
+    def highlight_cards(self, data:dict):
+        to_highlight = data.get("available")
+
+        for card_id in to_highlight:
+            self.game_data.highlighted_pos.append(self.game_data.card_ids.index(card_id))
+        
