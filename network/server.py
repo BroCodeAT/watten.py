@@ -21,29 +21,35 @@ class NetworkServer(socket.socket):
             conn, addr = self.accept()
 
             name = conn.recv(1024).decode(ENCODING)
-            self.clients[addr] = {
-                "name": name,
+            while name in self.clients:
+                conn.send(json.dumps({"command": "CONNECTION_REFUSED"}).encode(ENCODING))
+                conn.close()
+                conn, addr = self.accept()
+                name = conn.recv(1024).decode(ENCODING)
+            self.clients[name] = {
+                "addr": addr,
                 "connection": conn
             }
             print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount} ({addr[0]}:{addr[1]})")
-            self.send_to("CONNECTED", addr, name=name)
+            self.send_to("CONNECTED", name)
+        print(self.clients)
 
     def send_all(self, command: str, **data):
-        for addr in self.clients:
+        for name in self.clients:
             jso = {"command": command,
-                   "to": self.clients[addr]["name"]}
+                   "to": name}
 
             if data:
                 for key, value in data:
                     jso[key] = value
 
-            self.clients[addr]["connection"].send(json.dumps(jso).encode(ENCODING))
+            self.clients[name]["connection"].send(json.dumps(jso).encode(ENCODING))
 
-    def send_to(self, command: str, addr: str, **data):
-        if addr not in self.clients:
+    def send_to(self, command: str, username: str, **data):
+        if username not in self.clients:
             return None
         jso = {"command": command,
-               "to": self.clients[addr]["name"]}
+               "to": username}
 
         if data:
             for key, value in data.items():
@@ -52,13 +58,12 @@ class NetworkServer(socket.socket):
         string_data = json.dumps(jso)
 
         print(string_data)
-        self.clients[addr]["connection"].send(string_data.encode(ENCODING))
+        self.clients[username]["connection"].send(string_data.encode(ENCODING))
 
-    def receive(self, addr: str):
-        if addr not in self.clients:
+    def receive(self, name: str):
+        if name not in self.clients:
             return None
-
-        return self.clients[addr]["connection"].receive().decode(ENCODING)
+        return self.clients[name]["connection"].receive().decode(ENCODING)
 
 
 if __name__ == '__main__':

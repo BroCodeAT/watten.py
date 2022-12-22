@@ -28,6 +28,7 @@ class NetworkClient:
                 return True
         elif resp.get("command") == "CONNECTION_REFUSED":
             self.server.close()
+            self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             return False
 
     def send_to_server(self, msg: str):
@@ -38,6 +39,7 @@ class NetworkClient:
     def recv_from_server(self):
         with self.lock:
             data = self.server.recv(1024).decode()
+        print(data)
         try:
             return json.loads(data)
         except json.decoder.JSONDecodeError:
@@ -52,9 +54,9 @@ class NetworkClient:
             return commands
 
     def recv_in_process(self):
-        time.sleep(5)
         while self.running:
             recv = self.recv_from_server()
+            print(recv)
             if recv:
                 if isinstance(recv, list):
                     for com in recv:
