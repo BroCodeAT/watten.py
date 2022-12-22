@@ -21,7 +21,6 @@ class GameLogic:
 
         for index, client in enumerate(self.game_data.game_loop):
             self.server.send_to("PLAYER_NAMES", client, players=self.game_data.game_loop[index:] + self.game_data.game_loop[:index])
-            time.sleep(1)
 
     def start_game_loop(self):
         while True:
