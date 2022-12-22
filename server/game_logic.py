@@ -39,7 +39,7 @@ class GameLogic:
     def deal_round(self):
         # Dealing the cards to the client (serverside)
         for cards in [3, 2]:
-            for client in self.server.clients:
+            for client in self.game_data.game_loop:
                 deal_cards = self.game_data.card_dek.deal_top_card(cards)
                 try:
                     self.game_data.game_player[client]["cards"].extend(deal_cards)
