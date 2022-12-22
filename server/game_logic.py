@@ -1,4 +1,4 @@
-from models import GameData
+from models import GameData, CardBase
 from server_network import NetworkServer
 
 
@@ -35,7 +35,12 @@ class GameLogic:
     def start_for_new_points(self):
         self.game_data.mixed_dek()
         self.deal_round()
+        self.get_highest()
+
         input("DEBUG")
+
+    def start_playing_cards(self):
+        pass
 
     def deal_round(self):
         # Dealing the cards to the client (serverside)
@@ -51,3 +56,19 @@ class GameLogic:
         for client in self.server.clients:
             cards_to_send = self.game_data.game_player[client]["cards"]
             self.server.send_to("NEW_CARD", client, cards=list(map(int, cards_to_send)))
+
+    def get_highest(self, send: bool = True):
+        self.game_data.highest = CardBase.new_card(
+            self.game_data.game_player[self.game_data.game_loop[-1]]["cards"][3].col,
+            self.game_data.game_player[self.game_data.game_loop[0]]["cards"][3].num
+        )
+        if send:
+            self.server.send_to("HIGHEST", self.game_data.game_loop[-1], highest=int(self.game_data.highest))
+            self.server.send_to("HIGHEST", self.game_data.game_loop[0], highest=int(self.game_data.highest))
+
+    def better_cards(self):
+        for cards in [3, 2]:
+            for client in [self.game_data.game_loop[0], self.game_data.game_loop[-1]]:
+                deal_cards = self.game_data.card_dek.deal_top_card(cards)
+                self.game_data.game_player[client]["cards"] = []
+                self.game_data.game_player[client]["cards"].extend(deal_cards)

@@ -27,11 +27,18 @@
 - to: str → Name of the Client to send the Command to
 - players: list[str] → The List of the Names of the Players (to is first)
 
+### HIGHEST
+    The players that chose the highest card will get the ID of the highest one
+
+**Attributes:**
+- to: str → Name of the Client to send the Command to
+- highest: int → The ID of the highest card
+
 ### PLAYER_TURN
     A Client has to play a card
 
 **Attributes:**
 - to: str → Name of the Client to send the Command to
-- available: list[int] → The List of the Cards the Player can play
+- available: list[int] → The List of the Card_ids the Player can play
 
 # Client to Server
