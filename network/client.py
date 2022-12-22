@@ -44,7 +44,7 @@ class NetworkClient:
         except json.decoder.JSONDecodeError:
             commands = []
             commands_len = data.count("command")
-            # Remove first and last { / } to be sure to add the {,} afterwards in the for loop
+            # Remove first and last {,} to be sure to add the {,} afterwards in the for loop
             partial_commands = data[1:-1].split("}{")
             if len(partial_commands) == commands_len:
                 for command in partial_commands:
