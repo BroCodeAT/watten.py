@@ -1,8 +1,9 @@
 import pygame
 
-from common import utils
-from network import NetworkClient
-from models import ClientGameData
+import client_utils as utils
+
+from client_network import NetworkClient
+from client_models import ClientGameData
 
 
 class ClientLogic:
