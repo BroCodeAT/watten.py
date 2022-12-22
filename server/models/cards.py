@@ -1,4 +1,7 @@
-from common.cards import *
+import random
+import queue
+
+from cards_utils import *
 
 
 class CardBase:

@@ -1,7 +1,5 @@
-import time
-
 from models import GameData
-from network import NetworkServer
+from server_network import NetworkServer
 
 
 class GameLogic:

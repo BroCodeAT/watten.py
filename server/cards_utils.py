@@ -1,6 +1,4 @@
 import math
-import queue
-import random
 
 COL = ["Schell", "Herz", "Eichel", "Laub"]
 COL_TELL = [f"[{COL.index(col)}] {col}" for col in COL]

@@ -1,6 +1,6 @@
 import pygame
 
-from . import CardDek
+from models.cards import CardDek, CardBase
 
 
 class ClientGameData:

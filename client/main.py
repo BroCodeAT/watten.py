@@ -1,4 +1,4 @@
-from logic import ClientLogic
+from client_logic import ClientLogic
 
 if __name__ == '__main__':
     game = ClientLogic()
