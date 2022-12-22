@@ -42,6 +42,8 @@ class ClientLogic:
 
             self.display_cards()
 
+            self.display_player_names()
+
             pygame.display.update()
             self.clock.tick(60)
 
@@ -60,7 +62,7 @@ class ClientLogic:
 
             match recv.get("command"):
                 case "PLAYER_NAMES":
-                    self.display_player_names(recv)
+                    self.new_player_names(recv)
                 case "NEW_CARD":
                     self.new_cards(recv)
 
@@ -85,23 +87,28 @@ class ClientLogic:
                     x_start += x_step
                     y_start += y_step
 
-    def display_player_names(self, data: dict):
-        self.game_data.player_names = data.get("players")
+    def display_player_names(self):
+        if not self.game_data.player_names:
+            return
         # player_card_coordinates = [
         #     [0, 225, 110, 480, 0],
         #     [1, -85, 0, 100, 80],
         #     [2, 290, 80, -85, 0],
-        #     [3, 915, 0, 100, 80]]
+        #     [3, 915, 0, 100, 80]
+        #     ]
 
         rects = [pygame.Rect(225, 560, 550, 60), pygame.Rect(230, 100, 60, 340), pygame.Rect(290, 95, 340, 60), pygame.Rect(825, 100, 60, 340)]
         texts = [pygame.font.Font(None, 50).render(self.game_data.player_names[0], True, (255, 255, 255)),
-                 pygame.font.Font(None, 50).render(self.game_data.player_names[0], True, (255, 255, 255)),
-                 pygame.font.Font(None, 50).render(self.game_data.player_names[0], True, (255, 255, 255)),
-                 pygame.font.Font(None, 50).render(self.game_data.player_names[0], True, (255, 255, 255))]
+                 pygame.font.Font(None, 50).render(self.game_data.player_names[1], True, (255, 255, 255)),
+                 pygame.font.Font(None, 50).render(self.game_data.player_names[2], True, (255, 255, 255)),
+                 pygame.font.Font(None, 50).render(self.game_data.player_names[3], True, (255, 255, 255))]
         rotations = [0, 90, 0, 180]
         for text, rect, rotation in zip(texts, rects, rotations):
             pygame.transform.rotate(text, rotation)
             self.game_data.game_display.blit(text, text.get_rect(center=rect.center))
+
+    def new_player_names(self, data: dict):
+        self.game_data.player_names = data.get("players")
 
     def new_cards(self, data: dict):
         self.game_data.card_ids = data.get("cards")
