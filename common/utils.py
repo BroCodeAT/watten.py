@@ -1,7 +1,7 @@
 import sys
 import pygame
 from typing import List
-from cards import CardBase
+from models import CardBase
 
 
 def draw_text(text, color, surface: pygame.Surface, x, y, text_size=30):
@@ -79,7 +79,7 @@ def load_card_image(player_names: list[str], card_ids: list[int]) -> dict[str,li
         own_card = pygame.transform.scale(own_card, (100, 170))
         own_cards.append(own_card)
 
-    card_back = pygame.image.load(r"cards\card_back.png")
+    card_back = pygame.image.load(r"../cards/card_back.png")
     card_back = pygame.transform.scale(card_back, (100, 170))    
     card_back_rot = pygame.transform.rotate(card_back, 90)
 

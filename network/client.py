@@ -37,8 +37,7 @@ class NetworkClient:
             self.server.send(to_send)
 
     def recv_from_server(self):
-        with self.lock:
-            data = self.server.recv(1024).decode()
+        data = self.server.recv(1024).decode()
         print(data)
         try:
             return json.loads(data)

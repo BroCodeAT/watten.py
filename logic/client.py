@@ -14,7 +14,7 @@ class ClientLogic:
 
         self.debug = debug
 
-        self.background = pygame.image.load(r"../cards/background.PNG")
+        self.background = pygame.image.load(r"././cards/background.PNG")
 
         if auto_setup:
             self.setup()
@@ -32,10 +32,10 @@ class ClientLogic:
 
     def start_game_loop(self):
         while True:
-            game_display.blit(background, (0, 0))
+            self.game_display.blit(self.background, (0, 0))
             events = pygame.event.get()
 
-            self.get_username()
+            self.connect_to_server()
 
             self.resolve_server_commands()
 
@@ -44,18 +44,18 @@ class ClientLogic:
             self.display_cards()
 
             pygame.display.update()
-            clock.tick(60)
+            self.clock.tick(60)
 
-    def get_username(self):
+    def connect_to_server(self):
         if not self.username:
-            self.username = utils.text_input(game_display, clock)
-            conn = self.client.server_connect(username)
+            self.username = utils.text_input(self.game_display, self.clock)
+            conn = self.client.server_connect(self.username)
             if conn is False:
                 self.username = ""
 
     def resolve_server_commands(self):
-        if not client.que.empty():
-            recv: dict = client.que.get()
+        if not self.client.que.empty():
+            recv: dict = self.client.que.get()
             if self.debug:
                 print(recv)
 
@@ -66,7 +66,7 @@ class ClientLogic:
                 case "NEW_CARD":
                     self.new_cards(data)
 
-    def view_events(self, events: List[pygame.event.Event]):
+    def view_events(self, events: list[pygame.event.Event]):
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()

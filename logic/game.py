@@ -20,8 +20,8 @@ class GameLogic:
         self.game_data.team1["player"] = [gl[0], gl[2]]
         self.game_data.team2["player"] = [gl[1], gl[3]]
 
-        for index, client in enumerate(game_loop):
-            server.send_to("PLAYER_NAMES", client, players=game_loop[index:] + game_loop[:index])
+        for index, client in enumerate(self.game_data.game_loop):
+            self.server.send_to("PLAYER_NAMES", client, players=self.game_data.game_loop[index:] + self.game_data.game_loop[:index])
             time.sleep(1)
 
     def start_game_loop(self):
@@ -32,7 +32,7 @@ class GameLogic:
         self.game_data.start()
         self.deal_round()
 
-        server.send_all("SO_LOS_GEHTS")
+        self.server.send_all("SO_LOS_GEHTS")
 
         input("Debug")
 
@@ -41,15 +41,13 @@ class GameLogic:
         # Dealing the cards to the client (serverside)
         for cards in [3, 2]:
             for client in self.server.clients:
-                deal_cards = card_dek.deal_top_card(cards)
-                player_name = self.server.clients[client]
+                deal_cards = self.game_data.card_dek.deal_top_card(cards)
                 try:
-                    game_player[player_name]["cards"].extend(deal_cards)
+                    self.game_data.game_player[client]["cards"].extend(deal_cards)
                 except KeyError:
-                    game_player[player_name] = {"cards": deal_cards}
+                    self.game_data.game_player[client] = {"cards": deal_cards}
 
         # sending cards to clients
-        for client in server.clients:
-            player_name = server.clients[client]["name"]
-            cards_to_send = game_player[player_name]["cards"]
-            server.send_to("NEW_CARD", client, cards=list(map(int, cards_to_send)))
+        for client in self.server.clients:
+            cards_to_send = self.game_data.game_player[client]["cards"]
+            self.server.send_to("NEW_CARD", client, cards=list(map(int, cards_to_send)))
