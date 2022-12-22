@@ -40,7 +40,6 @@ class NetworkClient:
     def recv_from_server(self):
         with self.lock:
             data = self.server.recv(1024).decode()
-        print(data)
         try:
             return json.loads(data)
         except json.decoder.JSONDecodeError:
@@ -57,7 +56,6 @@ class NetworkClient:
     def recv_in_process(self):
         while self.running:
             recv = self.recv_from_server()
-            print(recv)
             if recv:
                 if isinstance(recv, list):
                     for com in recv:
