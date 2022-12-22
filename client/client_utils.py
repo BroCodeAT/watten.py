@@ -56,7 +56,7 @@ def text_input(screen: pygame.Surface, clock: pygame.time.Clock):
                     if username:
                         return username
                 else:
-                    if len(username) < 14:
+                    if len(username) < 10:
                         username += event.unicode
 
         pygame.display.update()
