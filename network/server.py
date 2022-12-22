@@ -32,7 +32,6 @@ class NetworkServer(socket.socket):
             }
             print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount} ({addr[0]}:{addr[1]})")
             self.send_to("CONNECTED", name)
-        print(self.clients)
 
     def send_all(self, command: str, **data):
         for name in self.clients:
