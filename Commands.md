@@ -32,6 +32,6 @@
 
 **Attributes:**
 - to: str → Name of the Client to send the Command to
-- available: list[int] → The List of the Cards the Player can play
+- available: list[int] → The List of the Card_ids the Player can play
 
 # Client to Server
