@@ -90,22 +90,17 @@ class ClientLogic:
     def display_player_names(self):
         if not self.game_data.player_names:
             return
-        # player_card_coordinates = [
-        #     [0, 225, 110, 480, 0],
-        #     [1, -85, 0, 100, 80],
-        #     [2, 290, 80, -85, 0],
-        #     [3, 915, 0, 100, 80]
-        #     ]
 
-        rects = [pygame.Rect(225, 420, 520, 60), pygame.Rect(230, 100, 60, 340), pygame.Rect(290, 95, 340, 60), pygame.Rect(825, 100, 60, 340)]
-        texts = [pygame.font.Font(None, 50).render(self.game_data.player_names[0], True, (255, 255, 255)),
-                 pygame.font.Font(None, 50).render(self.game_data.player_names[1], True, (255, 255, 255)),
-                 pygame.font.Font(None, 50).render(self.game_data.player_names[2], True, (255, 255, 255)),
-                 pygame.font.Font(None, 50).render(self.game_data.player_names[3], True, (255, 255, 255))]
-        rotations = [0, 90, 0, 180]
-        for text, rect, rotation in zip(texts, rects, rotations):
-            pygame.transform.rotate(text, rotation)
-            self.game_data.game_display.blit(text, text.get_rect(center=rect.center))
+        rects = [pygame.Rect(225, 430, 540, 60), pygame.Rect(0, 40, 200, 60), pygame.Rect(290, 75, 420, 60), pygame.Rect(800, 40, 200, 60)]
+        texts = [pygame.font.Font(None, 50).render(self.game_data.player_names[0], True, (12, 255, 255)),
+                 pygame.font.Font(None, 40).render(self.game_data.player_names[1], True, (12, 255, 255)),
+                 pygame.font.Font(None, 40).render(self.game_data.player_names[2], True, (12, 255, 255)),
+                 pygame.font.Font(None, 40).render(self.game_data.player_names[3], True, (12, 255, 255))]
+
+        self.game_data.game_display.blit(texts[0], texts[0].get_rect(center=rects[0].center))
+        self.game_data.game_display.blit(texts[1], texts[1].get_rect(bottomleft=rects[1].bottomleft))
+        self.game_data.game_display.blit(texts[2], texts[2].get_rect(center=rects[2].center))
+        self.game_data.game_display.blit(texts[3], texts[3].get_rect(bottomright=rects[3].bottomright))
 
     def new_player_names(self, data: dict):
         self.game_data.player_names = data.get("players")
