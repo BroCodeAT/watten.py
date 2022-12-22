@@ -22,15 +22,19 @@ class GameLogic:
 
     def start_game_loop(self):
         while True:
-            self.start_new_round()
+            self.start_new_point()
 
-    def start_new_round(self):
+    def start_new_point(self):
         self.game_data.start()
-        self.deal_round()
+
+        self.start_new_point()
 
         self.server.send_all("SO_LOS_GEHTS")
 
         input("Debug")
+
+    def start_new_round(self):
+        self.deal_round()
 
     def deal_round(self):
         # Dealing the cards to the client (serverside)
