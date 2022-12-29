@@ -3,7 +3,7 @@ import queue
 
 from typing import Union
 
-from server.cards_utils import *
+from cards_utils import *
 
 
 class CardBase:
