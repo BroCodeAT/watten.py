@@ -10,4 +10,4 @@ class ClientGameData:
         self.highlighted_pos: list[int] = []
 
         self.game_display = pygame.display.set_mode((1000, 700))
-        self.player_cards_surfaces = {}
+        self.player_cards_surfaces: dict[str,list[pygame.Surface]] = {}

@@ -99,7 +99,7 @@ class ClientLogic:
         if not self.game_data.player_names:
             return
 
-        rects = [pygame.Rect(225, 430, 540, 60), pygame.Rect(0, 40, 200, 60), pygame.Rect(290, 75, 420, 60), pygame.Rect(800, 40, 200, 60)]
+        rects = [pygame.Rect(225, 640, 540, 60), pygame.Rect(0, 40, 200, 60), pygame.Rect(290, 75, 420, 60), pygame.Rect(800, 40, 200, 60)]
         texts = [pygame.font.Font(None, 50).render(self.game_data.player_names[0], True, (12, 255, 255)),
                  pygame.font.Font(None, 40).render(self.game_data.player_names[1], True, (12, 255, 255)),
                  pygame.font.Font(None, 40).render(self.game_data.player_names[2], True, (12, 255, 255)),
