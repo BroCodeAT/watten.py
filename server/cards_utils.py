@@ -1,10 +1,7 @@
 import math
 
 COL = ["Schell", "Herz", "Eichel", "Laub"]
-COL_TELL = [f"[{COL.index(col)}] {col}" for col in COL]
-NUM = ["VII", "VIII", "IX", "X", "Unter", "Ober", "König", "Sau"]
-FULL_NUM = ["VI", "VII", "VIII", "IX", "X", "Unter", "Ober", "König", "Sau"]
-NUM_TELL = [f"[{FULL_NUM.index(num)}] {num}" for num in FULL_NUM]
+NUM = ["VII", "VIII", "IX", "X", "Unter", "Ober", "König", "Ass"]
 
 
 def convert_to_readable(card_id):
