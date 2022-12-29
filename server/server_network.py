@@ -112,14 +112,7 @@ class NetworkServer:
         None
         """
         for name in self.clients:
-            jso = {"command": command,
-                   "to": name}
-
-            if data:
-                for key, value in data:
-                    jso[key] = value
-
-            self.clients[name].conn.send(json.dumps(jso).encode(self.ENCODING))
+            self.send_to(command, name, **data)
 
     def send_to(self, command: str, username: str, **data) -> None:
         """

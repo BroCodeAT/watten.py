@@ -41,9 +41,16 @@
 - to: str → Name of the Client to send the Command to
 - available: list[int] → The List of the Card_ids the Player can play
 
+### UPDATE_TURN
+    Send an update to the clients (something changed)
+
+**Attributes:**
+- to: str → Name of the Client to send the Command to
+- played: list[int] → The cards that have been played already
+
 # Client to Server
 
-### TURN
+### PLAY_CARD
     The client sents the card to play to the server
 
 **Attributes:**

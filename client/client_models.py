@@ -17,6 +17,8 @@ class ClientGameData:
         The names of all the clients
     card_ids: list[int] (default: list)
         A list of the cards the player currently has
+    played_ids: list[int] (default: list)
+        The cards that have been played already
     highlighted_pos: list[int] (default: list)
         The positions of the highlighted cards
     game_display: pygame.Surface
@@ -27,6 +29,7 @@ class ClientGameData:
     username: str = ""
     player_names: list[str] = field(default_factory=list)
     card_ids: list[int] = field(default_factory=list)
+    played_ids: list[int] = field(default_factory=list)
     highlighted_pos: list[int] = field(default_factory=list)
     game_display: pygame.Surface = pygame.display.set_mode((1000, 700))
     player_cards_surfaces: dict[str, list[pygame.Surface]] = field(default_factory=dict)

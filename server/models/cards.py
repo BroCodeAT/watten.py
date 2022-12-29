@@ -105,6 +105,32 @@ class CardBase:
         else:
             raise NotImplementedError
 
+    def __ne__(self, other: "CardBase" | int) -> bool:
+        """
+        Checks if a card has not the same color as another one
+
+        Parameters
+        ----------
+        other : CardBase | int
+            The other card or the integer representation of a color
+
+        Returns
+        -------
+        bool : If the cards have the same color
+        """
+        if isinstance(other, CardBase):
+            if math.floor(self.col()) != math.floor(other.col()):
+                return True
+            else:
+                return False
+        elif isinstance(other, int):
+            if math.floor(self.card_id / 8) != math.floor(other / 8):
+                return True
+            else:
+                return False
+        else:
+            raise NotImplementedError
+
     def __gt__(self, other: "CardBase") -> bool:
         """
         Check if the color of the cards are the same
