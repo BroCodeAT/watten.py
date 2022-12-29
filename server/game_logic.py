@@ -84,10 +84,17 @@ class GameLogic:
                 self.game_data.highest
             )
             self.server.send_to("PLAYER_TURN", client, available=list(map(int, available_cards)))
+            data = self.server.receive_from_client(client)
+            self.handle_response(data)
+            input("turn")
 
     def handle_response(self, data: dict):
         print(data)
         match data.get("command"):
+            case "TURN":
+                self.game_data.played_cards.append(data.get("card"))
+                self.game_data.game_player.get(data.get("from")).get("cards").remove(data.get("card"))
+                print(self.game_data.played_cards)
             case "BETTER_CARDS":
                 pass
 

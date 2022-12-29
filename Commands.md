@@ -42,3 +42,10 @@
 - available: list[int] → The List of the Card_ids the Player can play
 
 # Client to Server
+
+### TURN
+    The client sents the card to play to the server
+
+**Attributes:**
+- from: str → The Name of the Client the message comes from
+- card: int → The Card the Client wants to play

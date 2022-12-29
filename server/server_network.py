@@ -8,27 +8,27 @@ PORT = 3333
 ENCODING = "utf-8"
 
 
-class NetworkServer(socket.socket):
+class NetworkServer:
     def __init__(self, host: str = "127.0.0.2", port: int = 3333):
         self.clients: Dict = {}
+        self.conn: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.que: multiprocessing.Queue = multiprocessing.Queue()
         self.listeners: list[multiprocessing.Process] = []
 
-        super().__init__(socket.AF_INET, socket.SOCK_STREAM)
         print(f"[{'LISTENING':<10}] Bound to the port: {host}:{port}")
-        self.bind((host, port))
+        self.conn.bind((host, port))
 
     def accept_clients(self, amount: int = 4):
-        self.listen(4)
+        self.conn.listen(4)
         for i in range(amount):
-            conn, addr = self.accept()
+            conn, addr = self.conn.accept()
 
             name = conn.recv(1024).decode(ENCODING)
             while name in self.clients:
                 conn.send(json.dumps({"command": "CONNECTION_REFUSED"}).encode(ENCODING))
                 conn.close()
-                conn, addr = self.accept()
+                conn, addr = self.con.accept()
                 name = conn.recv(1024).decode(ENCODING)
             self.clients[name] = {
                 "addr": addr,
@@ -67,7 +67,7 @@ class NetworkServer(socket.socket):
         if name not in self.clients:
             return None
 
-        return self.clients[name]["connection"].receive().decode(ENCODING)
+        return self.clients[name]["connection"].recv(1024).decode(ENCODING)
 
     def receive_from_client(self, client):
         data = self.receive(client)
@@ -87,7 +87,7 @@ class NetworkServer(socket.socket):
     def allow_responses_from(self, *clients: str):
         for client in clients:
             self.listeners.append(multiprocessing.Process(target=self.wait_for_response, args=(client,)))
-            self.listeners[-1].start()
+            self.listeners[-1].run()
 
     def stop_responses(self):
         for listener in self.listeners:
@@ -95,7 +95,7 @@ class NetworkServer(socket.socket):
         self.listeners = []
 
     def wait_for_response(self, client: str):
-        while self.running:
+        while True:
             recv = self.receive_from_client(client)
             if recv:
                 if isinstance(recv, list):

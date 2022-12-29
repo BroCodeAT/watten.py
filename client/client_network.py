@@ -4,7 +4,7 @@ import multiprocessing
 
 HOST = "127.0.0.2"
 PORT = 3333
-FORMAT = "utf-8"
+ENCODING = "utf-8"
 
 
 class NetworkClient:
@@ -40,7 +40,7 @@ class NetworkClient:
 
         string_data = json.dumps(jso)
 
-        self.clients[username]["connection"].send(string_data.encode(ENCODING))
+        self.server.send(string_data.encode(ENCODING))
 
     def recv_from_server(self):
         with self.lock:
