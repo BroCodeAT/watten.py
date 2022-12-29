@@ -83,7 +83,7 @@ class GameLogic:
                 self.game_data.played_cards,
                 self.game_data.highest
             )
-            self.server.send_to("PLAYER_TURN", client, available=available_cards)
+            self.server.send_to("PLAYER_TURN", client, available=list(map(int, available_cards)))
 
     def handle_response(self, data: dict):
         print(data)
