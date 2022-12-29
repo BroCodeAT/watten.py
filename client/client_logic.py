@@ -7,22 +7,78 @@ from client_models import ClientGameData
 
 
 class ClientLogic:
+    """
+    A class to handle the logic of the game (client side)
+
+    ...
+
+    Attributes
+    ----------
+    clock: pygame.time.Clock (default: None)
+        The pygame clock the game is synced to
+    client: NetworkClient
+        The network part of the client
+    game_data: ClientGameData
+        The data the game needs ot be playable
+    debug : bool
+        If the client should send debug messages
+    background : pygame.Surface
+        The image loaded as a surface
+
+    Methods
+    -------
+    setup() -> None
+        Initialize pygame, set a caption, get the clock and enable key repeat
+    start_game_loop() -> None
+        The game loop that is running endless will be started
+    connect_to_server() -> None
+        Try to connect to the Server after username input
+    resolve_server_commands() -> None
+        Handle the commands received from the server
+    view_events(events: list[pygame.event.Event]) -> None
+        React to the events that happened
+    display_cards() -> None
+        Display the cards of every player on the screen
+    display_player_names() -> None
+        Display the Player Names on the Screen
+
+    new_player_names(data: dict) -> None
+        Add the player names to the game_data
+    new_cards(data: dict) -> None
+        Add new cards to the cards of the player
+    highlight_cards(data: dict) -> None
+        Add cards to the highlighted cards in the game_data
+    """
     def __init__(self, auto_setup: bool = True, debug: bool = True):
-        self.player_names = None
-        self.player_cards_surfaces = None
-        self.game_display = None
+        """
+        Initialize a new GameLogic
+
+        Parameters
+        ----------
+        auto_setup: bool (default: True)
+            Automatically run the setup method
+        debug : bool (default: True)
+            If there should be debug messages or no cmd output
+        """
         self.clock = None
         self.client = NetworkClient()
         self.game_data = ClientGameData()
 
         self.debug = debug
 
-        self.background = pygame.image.load(r"cards/background.PNG")
+        self.background = pygame.image.load(r"client/cards/background.png")
 
         if auto_setup:
             self.setup()
 
-    def setup(self):
+    def setup(self) -> None:
+        """
+        Initialize pygame, set a caption, get the clock and enable key repeat
+
+        Returns
+        -------
+        None
+        """
         pygame.init()
 
         self.clock = pygame.time.Clock()
@@ -30,7 +86,14 @@ class ClientLogic:
         # Pygame now allows natively to enable key repeat:
         pygame.key.set_repeat(200, 25)
 
-    def start_game_loop(self):
+    def start_game_loop(self) -> None:
+        """
+        The game loop that is running endless will be started
+
+        Returns
+        -------
+        None
+        """
         while True:
             self.game_data.game_display.blit(self.background, (0, 0))
             events = pygame.event.get()
@@ -48,14 +111,29 @@ class ClientLogic:
             pygame.display.update()
             self.clock.tick(60)
 
-    def connect_to_server(self):
+    def connect_to_server(self) -> None:
+        """
+        Try to connect to the Server after username input
+
+        Returns
+        -------
+        None
+        """
         if not self.game_data.username:
             self.game_data.username = utils.text_input(self.game_data.game_display, self.clock)
             conn = self.client.server_connect(self.game_data.username)
             if conn is False:
                 self.game_data.username = ""
 
-    def resolve_server_commands(self):
+    def resolve_server_commands(self) -> None:
+        """
+        Handle the commands received from the server
+
+        Returns
+        -------
+        None
+
+        """
         if not self.client.que.empty():
             recv: dict = self.client.que.get()
             if self.debug:
@@ -67,15 +145,35 @@ class ClientLogic:
                 case "NEW_CARD":
                     self.new_cards(recv)
                 case "PLAYER_TURN":
+                    self.client.send_to_server("TURN", self.game_data.username, card=recv.get("available")[0])
                     self.highlight_cards(recv)
 
-    def view_events(self, events: list[pygame.event.Event]):
+    def view_events(self, events: list[pygame.event.Event]) -> None:
+        """
+        React to the events that happened
+
+        Parameters
+        ----------
+        events : list[pygame.event.Event]
+            All events that happened
+
+        Returns
+        -------
+        None
+        """
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 break
 
-    def display_cards(self):
+    def display_cards(self) -> None:
+        """
+        Display the cards of every player on the screen
+
+        Returns
+        -------
+        None
+        """
         if self.game_data.player_cards_surfaces.values():
             # [[player_id , x_start, x_step, y_start, y_step],...]
             player_card_coordinates = [
@@ -95,7 +193,14 @@ class ClientLogic:
                     x_start += x_step
                     y_start += y_step
 
-    def display_player_names(self):
+    def display_player_names(self) -> None:
+        """
+        Display the Player Names on the Screen
+
+        Returns
+        -------
+        None
+        """
         if not self.game_data.player_names:
             return
 
@@ -110,14 +215,51 @@ class ClientLogic:
         self.game_data.game_display.blit(texts[2], texts[2].get_rect(center=rects[2].center))
         self.game_data.game_display.blit(texts[3], texts[3].get_rect(bottomright=rects[3].bottomright))
 
-    def new_player_names(self, data: dict):
+    def new_player_names(self, data: dict) -> None:
+        """
+        Add the player names to the game_data
+
+        Parameters
+        ----------
+        data : dict
+            The command data including the 'players' key
+
+        Returns
+        -------
+        None
+        """
         self.game_data.player_names = data.get("players")
 
-    def new_cards(self, data: dict):
+    def new_cards(self, data: dict) -> None:
+        """
+        Add new cards to the cards of the player
+
+        Parameters
+        ----------
+        data : dict
+            The command data including the 'cards' key
+
+        Returns
+        -------
+        None
+        """
         self.game_data.card_ids = data.get("cards")
         self.game_data.player_cards_surfaces = utils.load_card_image(self.game_data.player_names, self.game_data.card_ids)
 
-    def highlight_cards(self, data:dict):
+    def highlight_cards(self, data: dict) -> None:
+        """
+        Add cards to the highlighted cards in the game_data
+        Only these cards are allowed to be player
+
+        Parameters
+        ----------
+        data : dict
+            The command data including the 'available' key
+
+        Returns
+        -------
+        None
+        """
         to_highlight = data.get("available")
 
         for card_id in to_highlight:
