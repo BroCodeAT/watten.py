@@ -149,7 +149,6 @@ class ClientLogic:
                 case "NEW_CARD":
                     self.new_cards(recv)
                 case "PLAYER_TURN":
-                    self.client.send_to_server("TURN", self.game_data.username, card=recv.get("available")[0])
                     self.highlight_cards(recv)
                 case "UPDATE_TURN":
                     self.game_data.played_ids = recv.get("played")
@@ -171,6 +170,10 @@ class ClientLogic:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 break
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.game_data.click = True
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.game_data.click = False   
 
     def display_cards(self) -> None:
         """
@@ -195,8 +198,10 @@ class ClientLogic:
                     if player == 0:
                         pointer = pygame.mouse.get_pos()
                         reference_rect = card_surface.get_rect().move(x_start, y_start)
-                        if player_surfaces.index(card_surface) in self.game_data.highlighted_pos and reference_rect.collidepoint(pointer):
+                        if player_surfaces.index(card_surface) in self.game_data.highlighted_pos and reference_rect.collidepoint(pointer) and self.game_data.in_turn:
                             y_start = 460
+                            if self.game_data.click:
+                                self.play_card(player_surfaces.index(card_surface), player_name)
                         else:
                             y_start = 480
                     self.game_data.game_display.blit(card_surface, (x_start, y_start))
@@ -287,9 +292,17 @@ class ClientLogic:
         -------
         None
         """
+        self.game_data.in_turn = True
+
         to_highlight = data.get("available")
 
         for card_id in to_highlight:
             pos = self.game_data.card_ids.index(card_id)
             self.game_data.highlighted_pos.append(pos)
-        
+    
+    def play_card(self,played_pos:int, player_name: str):
+        self.game_data.highlighted_pos.clear()
+        card_id = self.game_data.card_ids.pop(played_pos)
+        self.game_data.player_cards_surfaces[player_name].pop(played_pos)
+
+        self.client.send_to_server("PLAY_CARD", self.game_data.username, card=card_id)
