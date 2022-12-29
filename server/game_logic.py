@@ -1,4 +1,5 @@
 from models import GameData, CardBase
+from server_utils import check_available
 from server_network import NetworkServer
 
 
@@ -36,7 +37,8 @@ class GameLogic:
         self.game_data.mixed_dek()
         self.deal_round()
         self.get_highest()
-        self.ask_for_start()
+        # self.ask_for_start()
+        self.player_turns()
 
         input("DEBUG")
 
@@ -73,6 +75,15 @@ class GameLogic:
         self.server.stop_responses()
         while self.server.que.not_empty:
             self.handle_response(self.server.que.get())
+
+    def player_turns(self):
+        for client in self.game_data.game_loop:
+            available_cards = check_available(
+                self.game_data.game_player[client]["cards"],
+                self.game_data.played_cards,
+                self.game_data.highest
+            )
+            self.server.send_to("PLAYER_TURN", client, available=available_cards)
 
     def handle_response(self, data: dict):
         print(data)
