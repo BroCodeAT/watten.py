@@ -1,5 +1,5 @@
 from models import GameData, CardBase, PlayerData
-from server_utils import check_available
+from server_utils import check_available, check_winner
 from server_network import NetworkServer
 
 
@@ -121,6 +121,7 @@ class GameLogic:
         # self.ask_for_start()
         for i in range(5):
             self.start_player_turns()
+            self.resolve_turn_winner()
 
         input("DEBUG")
 
@@ -253,3 +254,8 @@ class GameLogic:
                 deal_cards = self.game_data.card_dek.deal_top_card(cards)
                 self.game_data.game_player[client].cards = []
                 self.game_data.game_player[client].cards.extend(deal_cards)
+
+    def resolve_turn_winner(self):
+        winner_index = check_winner(self.game_data.played_cards, self.game_data.highest)
+        self.server.send_all("TURN_WINNER", winner=list(self.game_data.game_loop)[winner_index])
+        self.game_data.game_loop = self.game_data.game_loop[winner_index:] + self.game_data.game_loop[:winner_index]

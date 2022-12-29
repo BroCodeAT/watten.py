@@ -48,6 +48,13 @@
 - to: str → Name of the Client to send the Command to
 - played: list[int] → The cards that have been played already
 
+### TURN_WINNER
+    Send the name of the winner of the current turn
+
+**Attributes:**
+- to: str → Name of the Client to send the Command to
+- winner: str → The name of the winner
+
 # Client to Server
 
 ### PLAY_CARD
