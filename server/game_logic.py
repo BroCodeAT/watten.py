@@ -38,12 +38,21 @@ class GameLogic:
         self.deal_round()
         self.get_highest()
         # self.ask_for_start()
-        self.player_turns()
+        self.start_player_turns()
 
         input("DEBUG")
 
-    def start_playing_cards(self):
-        pass
+    def start_player_turns(self):
+        for client in self.game_data.game_loop:
+            available_cards = check_available(
+                self.game_data.game_player[client].cards,
+                self.game_data.played_cards,
+                self.game_data.highest
+            )
+            self.server.send_to("PLAYER_TURN", client, available=list(map(int, available_cards)))
+            data = self.server.receive_from_client(client)
+            self.handle_response(data)
+            input("turn")
 
     def deal_round(self):
         # Dealing the cards to the client (serverside)
@@ -79,18 +88,6 @@ class GameLogic:
         self.server.stop_responses()
         while self.server.que.not_empty:
             self.handle_response(self.server.que.get())
-
-    def player_turns(self):
-        for client in self.game_data.game_loop:
-            available_cards = check_available(
-                self.game_data.game_player[client].cards,
-                self.game_data.played_cards,
-                self.game_data.highest
-            )
-            self.server.send_to("PLAYER_TURN", client, available=list(map(int, available_cards)))
-            data = self.server.receive_from_client(client)
-            self.handle_response(data)
-            input("turn")
 
     def handle_response(self, data: dict):
         print(data)
