@@ -187,7 +187,8 @@ class ClientLogic:
                 player_surfaces = self.game_data.player_cards_surfaces.get(player_name)
                 for card_surface in player_surfaces:
                     if player == 0:
-                        if player_surfaces.index(card_surface) in self.game_data.highlighted_pos:
+                        pointer = pygame.mouse.get_pos()
+                        if player_surfaces.index(card_surface) in self.game_data.highlighted_pos and card_surface.get_rect().collidepoint(pointer):
                             y_start = 460
                         else:
                             y_start = 480
