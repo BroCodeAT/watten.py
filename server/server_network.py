@@ -2,15 +2,13 @@ import json
 import socket
 import multiprocessing
 from typing import Dict
-
-HOST = "127.0.0.1"
-PORT = 3333
-ENCODING = "utf-8"
+from server.models import ClientData
 
 
 class NetworkServer:
     def __init__(self, host: str = "127.0.0.2", port: int = 3333):
-        self.clients: Dict = {}
+        self.clients: dict[str, ClientData] = {}
+        self.ENCODING = "utf-8"
         self.conn: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.que: multiprocessing.Queue = multiprocessing.Queue()
@@ -24,16 +22,13 @@ class NetworkServer:
         for i in range(amount):
             conn, addr = self.conn.accept()
 
-            name = conn.recv(1024).decode(ENCODING)
+            name = conn.recv(1024).decode(self.ENCODING)
             while name in self.clients:
-                conn.send(json.dumps({"command": "CONNECTION_REFUSED"}).encode(ENCODING))
+                conn.send(json.dumps({"command": "CONNECTION_REFUSED"}).encode(self.ENCODING))
                 conn.close()
                 conn, addr = self.con.accept()
-                name = conn.recv(1024).decode(ENCODING)
-            self.clients[name] = {
-                "addr": addr,
-                "connection": conn
-            }
+                name = conn.recv(1024).decode(self.ENCODING)
+            self.clients[name] = {ClientData.new_conn(name, conn, addr)}
             print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount} ({addr[0]}:{addr[1]})")
             self.send_to("CONNECTED", name)
 
@@ -46,7 +41,7 @@ class NetworkServer:
                 for key, value in data:
                     jso[key] = value
 
-            self.clients[name]["connection"].send(json.dumps(jso).encode(ENCODING))
+            self.clients[name].conn.send(json.dumps(jso).encode(self.ENCODING))
 
     def send_to(self, command: str, username: str, **data):
         if username not in self.clients:
@@ -61,13 +56,13 @@ class NetworkServer:
         string_data = json.dumps(jso)
 
         print(string_data)
-        self.clients[username]["connection"].send(string_data.encode(ENCODING))
+        self.clients[username].conn.send(string_data.encode(self.ENCODING))
 
     def receive(self, name: str):
         if name not in self.clients:
             return None
 
-        return self.clients[name]["connection"].recv(1024).decode(ENCODING)
+        return self.clients[name].conn.recv(1024).decode(self.ENCODING)
 
     def receive_from_client(self, client):
         data = self.receive(client)
@@ -106,5 +101,7 @@ class NetworkServer:
 
 
 if __name__ == '__main__':
+    HOST = "127.0.0.1"
+    PORT = 3333
     server = NetworkServer(host=HOST, port=PORT)
     server.accept_clients()
