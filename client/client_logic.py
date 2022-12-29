@@ -183,9 +183,11 @@ class ClientLogic:
                 [3, 915, 0, 100, 80]]
 
             for player, x_start, x_step, y_start, y_step in player_card_coordinates:
-                for card_surface in self.game_data.player_cards_surfaces.get(self.game_data.player_names[player]):
+                player_name = self.game_data.player_names[player]
+                player_surfaces = self.game_data.player_cards_surfaces.get(player_name)
+                for card_surface in player_surfaces:
                     if player == 0:
-                        if self.game_data.player_cards_surfaces.get(self.game_data.player_names[player]).index(card_surface) in self.game_data.highlighted_pos:
+                        if player_surfaces.index(card_surface) in self.game_data.highlighted_pos:
                             y_start = 460
                         else:
                             y_start = 480
