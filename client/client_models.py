@@ -21,7 +21,7 @@ class ClientGameData:
         The positions of the highlighted cards
     game_display: pygame.Surface
         The whole game surface
-    player_card_surfaces: dict (default: dict)
+    player_cards_surfaces: dict (default: dict)
         The surfaces of the cards of the players
     """
     username: str = ""
@@ -29,4 +29,4 @@ class ClientGameData:
     card_ids: list[int] = field(default_factory=list)
     highlighted_pos: list[int] = field(default_factory=list)
     game_display: pygame.Surface = pygame.display.set_mode((1000, 700))
-    player_card_surfaces: dict = field(default_factory=dict)
+    player_cards_surfaces: dict = field(default_factory=dict)
