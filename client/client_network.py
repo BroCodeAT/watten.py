@@ -30,10 +30,17 @@ class NetworkClient:
             self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             return False
 
-    def send_to_server(self, msg: str):
-        to_send = msg.encode(FORMAT)
-        with self.lock:
-            self.server.send(to_send)
+    def send_to_server(self, command: str, username: str, **data):
+        jso = {"command": command,
+               "from": username}
+
+        if data:
+            for key, value in data.items():
+                jso[key] = value
+
+        string_data = json.dumps(jso)
+
+        self.clients[username]["connection"].send(string_data.encode(ENCODING))
 
     def recv_from_server(self):
         with self.lock:
