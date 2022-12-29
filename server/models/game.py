@@ -1,4 +1,5 @@
 import pygame
+import socket
 
 from models.cards import CardDek, CardBase
 
