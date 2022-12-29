@@ -230,7 +230,7 @@ class GameLogic:
         """
         print(data)
         match data.get("command"):
-            case "TURN":
+            case "PLAY_CARD":
                 self.game_data.played_cards.append(data.get("card"))
                 self.game_data.game_player.get(data.get("from")).cards.remove(data.get("card"))
                 print(self.game_data.played_cards)

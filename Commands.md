@@ -50,7 +50,7 @@
 
 # Client to Server
 
-### TURN
+### PLAY_CARD
     The client sents the card to play to the server
 
 **Attributes:**
