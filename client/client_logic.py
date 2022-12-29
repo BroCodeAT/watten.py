@@ -17,7 +17,7 @@ class ClientLogic:
 
         self.debug = debug
 
-        self.background = pygame.image.load(r"client/cards/background.PNG")
+        self.background = pygame.image.load(r"cards/background.PNG")
 
         if auto_setup:
             self.setup()
@@ -88,9 +88,9 @@ class ClientLogic:
                 for card_surface in self.game_data.player_cards_surfaces.get(self.game_data.player_names[player]):
                     if player == 0:
                         if self.game_data.player_cards_surfaces.get(self.game_data.player_names[player]).index(card_surface) in self.game_data.highlighted_pos:
-                            x_start = 205
+                            y_start = 460
                         else:
-                            x_start = 225
+                            y_start = 480
                     self.game_data.game_display.blit(card_surface, (x_start, y_start))
                     x_start += x_step
                     y_start += y_step
@@ -121,5 +121,7 @@ class ClientLogic:
         to_highlight = data.get("available")
 
         for card_id in to_highlight:
-            self.game_data.highlighted_pos.append(self.game_data.card_ids.index(card_id))
+            pos = self.game_data.card_ids.index(card_id)
+            self.game_data.highlighted_pos.append(pos)
+        print("debug")
         
