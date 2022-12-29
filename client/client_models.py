@@ -30,3 +30,5 @@ class ClientGameData:
     highlighted_pos: list[int] = field(default_factory=list)
     game_display: pygame.Surface = pygame.display.set_mode((1000, 700))
     player_cards_surfaces: dict[str, list[pygame.Surface]] = field(default_factory=dict)
+    in_turn: bool = False
+    click: bool = False
