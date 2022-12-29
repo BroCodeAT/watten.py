@@ -7,6 +7,8 @@ class GameData:
     def __init__(self):
         self.card_dek: CardDek | None = None
 
+        self.played_cards: List[CardBase] = []
+
         self.team1: dict = {
             "player": [],
             "rounds": 0,
