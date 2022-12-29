@@ -2,7 +2,7 @@ import json
 import socket
 import multiprocessing
 from typing import Dict
-from server.models import ClientData
+from models import ClientData
 
 
 class NetworkServer:
