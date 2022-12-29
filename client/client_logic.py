@@ -39,6 +39,8 @@ class ClientLogic:
         React to the events that happened
     display_cards() -> None
         Display the cards of every player on the screen
+    display_played_cards() -> None
+        Show all the already_played cards in the middle of the screen
     display_player_names() -> None
         Display the Player Names on the Screen
 
@@ -66,7 +68,7 @@ class ClientLogic:
 
         self.debug = debug
 
-        self.background = pygame.image.load(r"client/cards/background.png")
+        self.background = pygame.image.load(r"cards/background.png")
 
         if auto_setup:
             self.setup()
@@ -105,6 +107,8 @@ class ClientLogic:
             self.view_events(events)
 
             self.display_cards()
+
+            self.display_played_cards()
 
             self.display_player_names()
 
@@ -147,6 +151,8 @@ class ClientLogic:
                 case "PLAYER_TURN":
                     self.client.send_to_server("TURN", self.game_data.username, card=recv.get("available")[0])
                     self.highlight_cards(recv)
+                case "UPDATE_TURN":
+                    self.game_data.played_ids = recv.get("played")
 
     def view_events(self, events: list[pygame.event.Event]) -> None:
         """
@@ -195,6 +201,22 @@ class ClientLogic:
                     self.game_data.game_display.blit(card_surface, (x_start, y_start))
                     x_start += x_step
                     y_start += y_step
+
+    def display_played_cards(self) -> None:
+        """
+        Show all the already_played cards in the middle of the screen
+
+        Returns
+        -------
+        None
+        """
+        x_start = 200
+        y_start = 225
+        x_step = 110
+        for index, card in enumerate(self.game_data.played_ids):
+            img = pygame.image.load(fr"cards/id_{card}.PNG")
+            img = pygame.transform.scale(img, (100, 170))
+            self.game_data.game_display.blit(img, (x_start + x_step*index, y_start))
 
     def display_player_names(self) -> None:
         """
@@ -269,5 +291,4 @@ class ClientLogic:
         for card_id in to_highlight:
             pos = self.game_data.card_ids.index(card_id)
             self.game_data.highlighted_pos.append(pos)
-        print("debug")
         
