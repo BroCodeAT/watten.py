@@ -96,7 +96,7 @@ class NetworkServer:
             print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount} ({addr[0]}:{addr[1]})")
             self.send_to("CONNECTED", name)
 
-    def send_all(self, command: str, **data) -> None:
+    def send_all(self, command: str, **data: any) -> None:
         """
         Send a command to every client in self.clients
 
@@ -104,7 +104,7 @@ class NetworkServer:
         ----------
         command : str
             The command every client should receive
-        data : dict
+        data : any
             Additional data every client should receive
 
         Returns
@@ -114,7 +114,7 @@ class NetworkServer:
         for name in self.clients:
             self.send_to(command, name, **data)
 
-    def send_to(self, command: str, username: str, **data) -> None:
+    def send_to(self, command: str, username: str, **data: any) -> None:
         """
         Send data to a Client
 
@@ -124,7 +124,7 @@ class NetworkServer:
             The command the Client should receive
         username : str
             The username the command should be sent to
-        data : dict
+        data : any
             Additional data the client needs
         Returns
         -------
