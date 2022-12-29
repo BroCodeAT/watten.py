@@ -213,6 +213,8 @@ class CardDek:
     ----------
     cards : list[CardBase]
         A list of all the cards in the dek
+    cards_queue : queue.Queue
+        A queue of all the cards in the dek (necessary to deal the top cards)
 
     Methods
     -------
@@ -236,6 +238,9 @@ class CardDek:
         :param cards: The list of cards a Dek includes
         """
         self.cards: list[CardBase] = cards
+        self.cards_queue: queue.Queue = queue.Queue()
+        for card in cards:
+            self.cards_queue.put(card)
 
     def __repr__(self) -> str:
         """
