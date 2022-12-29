@@ -20,10 +20,16 @@ class GameData:
             "points": 0
         }
 
-        self.game_player: dict[str, dict[str, list]] = {}
+        self.game_player: dict[str, PlayerData] = {}
         self.game_loop: list[str] = []
 
         self.highest: CardBase | None = None
 
     def mixed_dek(self):
         self.card_dek = CardDek.get_mixed_dek()
+
+
+class PlayerData:
+    def __init__(self, name: str):
+        self.name: str = name
+        self.cards: list[CardBase] | None = []

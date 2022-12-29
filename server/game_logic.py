@@ -1,4 +1,4 @@
-from models import GameData, CardBase
+from models import GameData, CardBase, PlayerData
 from server_utils import check_available
 from server_network import NetworkServer
 
@@ -51,26 +51,30 @@ class GameLogic:
             for client in self.game_data.game_loop:
                 deal_cards = self.game_data.card_dek.deal_top_card(cards)
                 try:
-                    self.game_data.game_player[client]["cards"].extend(deal_cards)
+                    self.game_data.game_player[client].cards.extend(deal_cards)
                 except KeyError:
-                    self.game_data.game_player[client] = {"cards": deal_cards}
+                    data = PlayerData(client)
+                    data.cards.extend(deal_cards)
+                    self.game_data.game_player[client] = data
+
 
         # sending cards to clients
         for client in self.server.clients:
-            cards_to_send = self.game_data.game_player[client]["cards"]
+            cards_to_send = self.game_data.game_player[client].cards
             self.server.send_to("NEW_CARD", client, cards=list(map(int, cards_to_send)))
 
     def get_highest(self, send: bool = True):
         self.game_data.highest = CardBase.new_card(
-            self.game_data.game_player[self.game_data.game_loop[-1]]["cards"][3].col(),
-            self.game_data.game_player[self.game_data.game_loop[0]]["cards"][3].num()
+            self.game_data.game_player[self.game_data.game_loop[-1]].cards[3].col(),
+            self.game_data.game_player[self.game_data.game_loop[0]].cards[3].num()
         )
         if send:
             self.server.send_to("HIGHEST", self.game_data.game_loop[-1], highest=int(self.game_data.highest))
             self.server.send_to("HIGHEST", self.game_data.game_loop[0], highest=int(self.game_data.highest))
 
     def ask_for_start(self):
-        self.server.allow_responses_from(self.game_data.game_loop[0], self.game_data.game_loop[-1])
+        players = [self.game_data.game_loop[0], self.game_data.game_loop[-1]]
+        self.server.allow_responses_from(*players)
         time.sleep(10)
         self.server.stop_responses()
         while self.server.que.not_empty:
@@ -79,7 +83,7 @@ class GameLogic:
     def player_turns(self):
         for client in self.game_data.game_loop:
             available_cards = check_available(
-                self.game_data.game_player[client]["cards"],
+                self.game_data.game_player[client].cards,
                 self.game_data.played_cards,
                 self.game_data.highest
             )
@@ -93,7 +97,7 @@ class GameLogic:
         match data.get("command"):
             case "TURN":
                 self.game_data.played_cards.append(data.get("card"))
-                self.game_data.game_player.get(data.get("from")).get("cards").remove(data.get("card"))
+                self.game_data.game_player.get(data.get("from")).cards.remove(data.get("card"))
                 print(self.game_data.played_cards)
             case "BETTER_CARDS":
                 pass
@@ -102,5 +106,5 @@ class GameLogic:
         for cards in [3, 2]:
             for client in [self.game_data.game_loop[0], self.game_data.game_loop[-1]]:
                 deal_cards = self.game_data.card_dek.deal_top_card(cards)
-                self.game_data.game_player[client]["cards"] = []
-                self.game_data.game_player[client]["cards"].extend(deal_cards)
+                self.game_data.game_player[client].cards = []
+                self.game_data.game_player[client].cards.extend(deal_cards)
