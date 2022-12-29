@@ -66,7 +66,7 @@ class ClientLogic:
 
         self.debug = debug
 
-        self.background = pygame.image.load(r"client/cards/background.png")
+        self.background = pygame.image.load(r"cards/background.png")
 
         if auto_setup:
             self.setup()
@@ -188,7 +188,8 @@ class ClientLogic:
                 for card_surface in player_surfaces:
                     if player == 0:
                         pointer = pygame.mouse.get_pos()
-                        if player_surfaces.index(card_surface) in self.game_data.highlighted_pos and card_surface.get_rect().collidepoint(pointer):
+                        reference_rect = card_surface.get_rect().move(x_start, y_start)
+                        if player_surfaces.index(card_surface) in self.game_data.highlighted_pos and reference_rect.collidepoint(pointer):
                             y_start = 460
                         else:
                             y_start = 480
