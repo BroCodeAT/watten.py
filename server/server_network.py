@@ -92,7 +92,7 @@ class NetworkServer:
                 conn.close()
                 conn, addr = self.con.accept()
                 name = conn.recv(1024).decode(self.ENCODING)
-            self.clients[name] = {ClientData.new_conn(name, conn, addr)}
+            self.clients[name] = ClientData.new_conn(name, conn, addr)
             print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount} ({addr[0]}:{addr[1]})")
             self.send_to("CONNECTED", name)
 
