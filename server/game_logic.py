@@ -134,11 +134,12 @@ class GameLogic:
         -------
         None
         """
-        for client in self.game_data.game_loop:
+        for index, client in enumerate(self.game_data.game_loop):
             available_cards = check_available(
                 self.game_data.game_player[client].cards,
                 self.game_data.played_cards,
-                self.game_data.highest
+                self.game_data.highest,
+                True if index in [0, 3] else False
             )
             self.server.send_to("PLAYER_TURN", client, available=list(map(int, available_cards)))
             data = self.server.receive_from_client(client)
