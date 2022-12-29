@@ -105,7 +105,7 @@ class CardBase:
         else:
             raise NotImplementedError
 
-    def __ne__(self, other: "CardBase" | int) -> bool:
+    def __ne__(self, other: Union["CardBase", int]) -> bool:
         """
         Checks if a card has not the same color as another one
 
