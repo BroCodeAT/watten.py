@@ -99,3 +99,65 @@ class PlayerData:
         """
         self.name: str = name
         self.cards: list[CardBase] | None = []
+
+
+class ClientData:
+    """
+    A class to represent a Client including all the needed client Data.
+
+    ...
+
+    Attributes
+    ----------
+    name : str
+        The name of the Client
+    conn : socket.socket (default: None)
+        The connection to the Client
+    addr : tuple[str, int] (default: None)
+        The address the connection was established to (client side)
+
+    ClassMethod
+    -----------
+    new_conn(name: str, conn: socket.socket, addr: tuple[str, int]) -> ClientData
+        Create a new Data object using the given parameters
+    """
+    def __init__(self, name: str, conn: socket.socket = None, addr: tuple[str, int] = None):
+        """
+        Initialize all necessary attributes for the client object
+
+        Parameters
+        ----------
+        name : str
+            The name of the Client
+        conn : socket.socket (default: None)
+            The connection to the Client
+        addr : tuple[str, int] (default: None)
+            The address the connection was established to (client side)
+        """
+        self.name: str = name
+        self.conn: socket.socket | None = conn
+        self.addr: tuple[str, int] | None = addr
+
+    @classmethod
+    def new_conn(cls, name: str, conn: socket.socket, addr: tuple[str, int]) -> "ClientData":
+        """
+        A new connection was established and all the wanted data is saved in this object
+
+        Parameters
+        ----------
+        name : str
+            The name of the Client
+        conn : socket.socket (default: None)
+            The connection to the Client
+        addr : tuple[str, int] (default: None)
+            The address the connection was established to (client side)
+
+        Returns
+        -------
+        ClientData : The new ClientData object
+        """
+        return cls(
+            name,
+            conn,
+            addr
+        )
