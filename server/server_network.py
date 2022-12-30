@@ -29,6 +29,10 @@ class NetworkServer:
 
     Methods
     -------
+    send(conn: socket.socket, data: bytes) -> None
+        Send data to the client (first length then data)
+    recv(conn: socket.socket) -> bytes
+        Function to receive the exact amount of bytes
     accept_clients(amount: int = 4) -> None
         Allow 'amount' clients to connect to the Server
     send_all(command: str, **data) -> None
@@ -61,11 +65,54 @@ class NetworkServer:
         self.ENCODING = "utf-8"
         self.conn: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+        self.lock: multiprocessing.Lock = multiprocessing.Lock()
         self.que: multiprocessing.Queue = multiprocessing.Queue()
         self.listeners: list[multiprocessing.Process] = []
 
         print(f"[{'LISTENING':<10}] Bound to the port: {host}:{port}")
         self.conn.bind((host, port))
+
+    def send(self, conn: socket.socket, data: bytes) -> None:
+        """
+        Send data to the client (first length then data)
+
+        Parameters
+        ----------
+        conn : socket.socket
+            The connection to the client
+        data : bytes
+            The data to send to the client
+
+        Returns
+        -------
+        None
+        """
+        length = len(data)
+        with self.lock:
+            conn.send(length.to_bytes(16, "big"))
+            serv_length = int.from_bytes(conn.recv(16), "big")
+            if length == serv_length:
+                conn.send(data)
+
+    def recv(self, conn: socket.socket) -> bytes:
+        """
+        Function to receive the exact amount of bytes
+        First the length will be received than the client receives the data
+
+        Parameters
+        ----------
+        conn : socket.socket
+            The connection to the client
+
+        Returns
+        -------
+        bytes : The data received
+        """
+        with self.lock:
+            length = int.from_bytes(conn.recv(16), "big")
+            conn.send(length.to_bytes(16, "big"))
+            data = conn.recv(length)
+        return data
 
     def accept_clients(self, amount: int = 4) -> None:
         """
@@ -86,12 +133,13 @@ class NetworkServer:
         for i in range(amount):
             conn, addr = self.conn.accept()
 
-            name = conn.recv(1024).decode(self.ENCODING)
+            name = self.recv(conn).decode(self.ENCODING)
             while name in self.clients:
-                conn.send(json.dumps({"command": "CONNECTION_REFUSED"}).encode(self.ENCODING))
-                conn.close()
-                conn, addr = self.con.accept()
-                name = conn.recv(1024).decode(self.ENCODING)
+                with self.lock:
+                    self.send(conn, json.dumps({"command": "CONNECTION_REFUSED"}).encode(self.ENCODING))
+                    conn.close()
+                    conn, addr = self.con.accept()
+                    name = self.recv(conn).decode(self.ENCODING)
             self.clients[name] = ClientData.new_conn(name, conn, addr)
             print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount} ({addr[0]}:{addr[1]})")
             self.send_to("CONNECTED", name)
@@ -142,7 +190,7 @@ class NetworkServer:
         string_data = json.dumps(jso)
 
         print(string_data)
-        self.clients[username].conn.send(string_data.encode(self.ENCODING))
+        self.send(self.clients[username].conn, string_data.encode(self.ENCODING))
 
     def receive(self, name: str) -> str | None:
         """
@@ -160,7 +208,7 @@ class NetworkServer:
         if name not in self.clients:
             return None
 
-        return self.clients[name].conn.recv(1024).decode(self.ENCODING)
+        return self.recv(self.clients[name].conn).decode(self.ENCODING)
 
     def receive_from_client(self, client) -> list[dict] | dict:
         """

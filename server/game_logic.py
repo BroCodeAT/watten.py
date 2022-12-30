@@ -231,6 +231,8 @@ class GameLogic:
         None
         """
         print(data)
+        if not data:
+            return
         match data.get("command"):
             case "PLAY_CARD":
                 self.game_data.played_cards.append(data.get("card"))

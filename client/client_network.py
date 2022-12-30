@@ -31,6 +31,10 @@ class NetworkClient:
 
     Methods
     -------
+    send(data: bytes) -> None
+        Send data to the server (first length then data)
+    recv() -> bytes
+        Function to receive the exact amount of bytes
     server_connect(self, name: str, host: str = "127.0.0.2", port: int = 3333) -> bool
         Connect to the server with a given name
     send_to_server(self, command: str, username: str, **data) -> None
@@ -49,8 +53,43 @@ class NetworkClient:
         self.lock = multiprocessing.Lock()
         self.que = multiprocessing.Queue()
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.listener = multiprocessing.Process(target=self.recv_in_process)
+        self.listener = multiprocessing.Process(target=self.recv_in_process, daemon=True)
         self.running: bool = True
+
+    def send(self, data: bytes):
+        """
+        Send data to the server (first length then data)
+
+        Parameters
+        ----------
+        data : bytes
+            The data to send to the server
+
+        Returns
+        -------
+        None
+        """
+        length = len(data)
+        with self.lock:
+            self.server.send(length.to_bytes(16, "big"))
+            serv_length = int.from_bytes(self.server.recv(16), "big")
+            if length == serv_length:
+                self.server.send(data)
+
+    def recv(self) -> bytes:
+        """
+        Function to receive the exact amount of bytes
+        First the length will be received than the client receives the data
+
+        Returns
+        -------
+        bytes : The data received
+        """
+        with self.lock:
+            length = int.from_bytes(self.server.recv(16), "big")
+            self.server.send(length.to_bytes(16, "big"))
+            data = self.server.recv(length)
+        return data
 
     def server_connect(self, name: str, host: str = "127.0.0.2", port: int = 3333) -> bool:
         """
@@ -70,11 +109,11 @@ class NetworkClient:
 
         """
         self.server.connect((host, port))
-        with self.lock:
-            self.server.send(name.encode())
+        self.send(name.encode())
         resp = self.recv_from_server()
         if resp.get("command") == "CONNECTED":
             if resp.get("to") == name:
+                print("listener_started")
                 self.listener.start()
                 return True
         elif resp.get("command") == "CONNECTION_REFUSED":
@@ -108,7 +147,7 @@ class NetworkClient:
 
         string_data = json.dumps(jso)
 
-        self.server.send(string_data.encode(self.ENCODING))
+        self.send(string_data.encode(self.ENCODING))
 
     def recv_from_server(self) -> dict | list[dict]:
         """
@@ -121,7 +160,8 @@ class NetworkClient:
         list[dict] : a list of commands received from the server
         """
         with self.lock:
-            data = self.server.recv(1024).decode()
+            data = self.recv().decode()
+        print(data)
         try:
             return json.loads(data)
         except json.decoder.JSONDecodeError:
@@ -145,6 +185,7 @@ class NetworkClient:
         None
         """
         while self.running:
+            print("receive")
             recv = self.recv_from_server()
             if recv:
                 if isinstance(recv, list):
