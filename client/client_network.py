@@ -2,6 +2,8 @@ import json
 import socket
 import multiprocessing
 
+from typing import Any
+
 
 class NetworkClient:
     """
@@ -80,7 +82,7 @@ class NetworkClient:
             self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             return False
 
-    def send_to_server(self, command: str, username: str, **data) -> None:
+    def send_to_server(self, command: str, username: str, **data: Any) -> None:
         """
         Send a command to the server
 

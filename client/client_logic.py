@@ -300,7 +300,7 @@ class ClientLogic:
             pos = self.game_data.card_ids.index(card_id)
             self.game_data.highlighted_pos.append(pos)
     
-    def play_card(self,played_pos:int, player_name: str):
+    def play_card(self, played_pos: int, player_name: str):
         self.game_data.highlighted_pos.clear()
         card_id = self.game_data.card_ids.pop(played_pos)
         self.game_data.player_cards_surfaces[player_name].pop(played_pos)

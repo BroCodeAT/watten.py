@@ -1,7 +1,7 @@
 import json
 import socket
 import multiprocessing
-from typing import Dict
+from typing import Dict, Any
 from models import ClientData
 
 
@@ -96,7 +96,7 @@ class NetworkServer:
             print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount} ({addr[0]}:{addr[1]})")
             self.send_to("CONNECTED", name)
 
-    def send_all(self, command: str, **data: any) -> None:
+    def send_all(self, command: str, **data: Any) -> None:
         """
         Send a command to every client in self.clients
 
@@ -114,7 +114,7 @@ class NetworkServer:
         for name in self.clients:
             self.send_to(command, name, **data)
 
-    def send_to(self, command: str, username: str, **data: any) -> None:
+    def send_to(self, command: str, username: str, **data: Any) -> None:
         """
         Send data to a Client
 
