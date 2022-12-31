@@ -135,11 +135,10 @@ class NetworkServer:
 
             name = self.recv(conn).decode(self.ENCODING)
             while name in self.clients:
-                with self.lock:
-                    self.send(conn, json.dumps({"command": "CONNECTION_REFUSED"}).encode(self.ENCODING))
-                    conn.close()
-                    conn, addr = self.con.accept()
-                    name = self.recv(conn).decode(self.ENCODING)
+                self.send(conn, json.dumps({"command": "CONNECTION_REFUSED"}).encode(self.ENCODING))
+                conn.close()
+                conn, addr = self.con.accept()
+                name = self.recv(conn).decode(self.ENCODING)
             self.clients[name] = ClientData.new_conn(name, conn, addr)
             print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount} ({addr[0]}:{addr[1]})")
             self.send_to("CONNECTED", name)
@@ -188,8 +187,8 @@ class NetworkServer:
                 jso[key] = value
 
         string_data = json.dumps(jso)
+        print(f"[{'SENDING':<10}] {string_data}")
 
-        print(string_data)
         self.send(self.clients[username].conn, string_data.encode(self.ENCODING))
 
     def receive(self, name: str) -> str | None:
