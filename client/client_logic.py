@@ -140,8 +140,6 @@ class ClientLogic:
         """
         if not self.client.que.empty():
             recv: dict = self.client.que.get()
-            if self.debug:
-                print(recv)
 
             match recv.get("command"):
                 case "PLAYER_NAMES":

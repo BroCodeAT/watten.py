@@ -146,6 +146,7 @@ class NetworkClient:
                 jso[key] = value
 
         string_data = json.dumps(jso)
+        print(f"[{'SENDING':<10}] {string_data}")
 
         self.send(string_data.encode(self.ENCODING))
 
@@ -159,9 +160,8 @@ class NetworkClient:
         dict : a command received from the server
         list[dict] : a list of commands received from the server
         """
-        with self.lock:
-            data = self.recv().decode()
-        print(data)
+        data = self.recv().decode()
+        print(f"[{'RECEIVED':<10}] {data}")
         try:
             return json.loads(data)
         except json.decoder.JSONDecodeError:
@@ -185,7 +185,6 @@ class NetworkClient:
         None
         """
         while self.running:
-            print("receive")
             recv = self.recv_from_server()
             if recv:
                 if isinstance(recv, list):
@@ -193,3 +192,4 @@ class NetworkClient:
                         self.que.put(com)
                     return
                 self.que.put(recv)
+            time.sleep(0.2)

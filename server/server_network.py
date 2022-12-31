@@ -226,6 +226,7 @@ class NetworkServer:
         list[dict] : Multiple Commands
         """
         data = self.receive(client)
+        print(f"[{'RECEIVED':<10}] {data}")
         try:
             return json.loads(data)
         except json.decoder.JSONDecodeError:
