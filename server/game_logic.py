@@ -136,12 +136,12 @@ class GameLogic:
         -------
         None
         """
-        for index, client in enumerate(self.game_data.game_loop):
+        for client in self.game_data.game_loop:
             available_cards = check_available(
-                self.game_data.game_player[client].cards,
+                self.game_data.game_player.get(client).cards,
                 self.game_data.played_cards,
                 self.game_data.highest,
-                True if index in [0, 3] else False
+                True if list(self.game_data.game_player).index(client) in [0, 3] else False
             )
             self.server.send_to("PLAYER_TURN", client, available=list(map(int, available_cards)))
             data = self.server.receive_from_client(client)
@@ -238,7 +238,9 @@ class GameLogic:
         match data.get("command"):
             case "PLAY_CARD":
                 self.game_data.played_cards.append(CardBase(data.get("card")))
-                self.game_data.game_player.get(data.get("from")).cards.remove(data.get("card"))
+                int_cards = list(map(int, self.game_data.game_player.get(data.get("from")).cards))
+                index = int_cards.index(data.get("card"))
+                self.game_data.game_player.get(data.get("from")).cards.pop(index)
                 self.server.send_all("UPDATE_TURN", played=tuple(map(int, self.game_data.played_cards)), last_played=data.get("from"))
             case "BETTER_CARDS":
                 pass
