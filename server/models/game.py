@@ -22,12 +22,14 @@ class GameData:
             player : The list of players in this team (default: [])
             rounds : The amount of rounds this team won (default: 0)
             points : The points in one round this team currently has (default: 0)
+            turns : The amount of turns this team won (default: 0)
     team2 : dict[str, list | int]
         The stats of the Second team
         values :
             player : The list of players in this team (default: [])
             rounds : The amount of rounds this team won (default: 0)
             points : The points in one round this team currently has (default: 0)
+            turns : The amount of turns this team won (default: 0)
     game_player : dict[str, dict[str, list]] (default: {})
         An overview of every player in the game including the PlayerData
     game_loop : list[str]
@@ -52,15 +54,18 @@ class GameData:
         self.team1: dict = {
             "player": [],
             "rounds": 0,
-            "points": 0
+            "points": 0,
+            "turns": 0
         }
         self.team2: dict = {
             "player": [],
             "rounds": 0,
-            "points": 0
+            "points": 0,
+            "turns": 0
         }
 
         self.game_player: dict[str, PlayerData] = {}
+        self.turn_loop: list[str] = []
         self.game_loop: list[str] = []
 
         self.highest: CardBase | None = None

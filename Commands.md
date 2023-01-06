@@ -56,7 +56,16 @@
 - to: str → Name of the Client to send the Command to
 - winner: str → The name of the winner
 
+### POINT_WINNER
+    Send the name of the winners to all the players
+
+**Attributes:**
+- to: str → Name of the Client to send the Command to
+- winner: list[str] → The name of the winner
+
 # Client to Server
+
+---
 
 ### PLAY_CARD
     The client sents the card to play to the server
