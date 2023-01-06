@@ -149,7 +149,10 @@ class ClientLogic:
                 case "PLAYER_TURN":
                     self.highlight_cards(recv)
                 case "UPDATE_TURN":
-                    self.game_data.played_ids = recv.get("played")
+                    self.update_turn(recv)
+                case "TURN_WINNER":
+                    self.turn_winner(recv)
+                    # TODO: clear played cards
 
     def view_events(self, events: list[pygame.event.Event]) -> None:
         """
@@ -190,8 +193,11 @@ class ClientLogic:
                 [3, 915, 0, 100, 80]]
 
             for player, x_start, x_step, y_start, y_step in player_card_coordinates:
+                #get player name
                 player_name = self.game_data.player_names[player]
+                #get the card surfaces of the player 
                 player_surfaces = self.game_data.player_cards_surfaces.get(player_name)
+
                 for card_surface in player_surfaces:
                     if player == 0:
                         pointer = pygame.mouse.get_pos()
@@ -304,3 +310,13 @@ class ClientLogic:
         self.game_data.player_cards_surfaces[player_name].pop(played_pos)
 
         self.client.send_to_server("PLAY_CARD", self.game_data.username, card=card_id)
+
+    def update_turn(self, data: dict):
+        self.game_data.played_ids = data.get("played")
+        last_player: str = data.get("last_played")
+        if last_player != self.game_data.username:
+            self.game_data.player_cards_surfaces[last_player].pop(0)
+
+    def turn_winner(self, data: dict):
+        self.game_data.played_ids.clear()
+        # TODO: show turn at the player who won the turn
