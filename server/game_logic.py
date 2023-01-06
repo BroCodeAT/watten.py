@@ -281,4 +281,3 @@ class GameLogic:
         self.server.send_all("TURN_WINNER", winner=list(self.game_data.turn_loop)[winner_index])
         self.game_data.turn_loop = self.game_data.turn_loop[winner_index:] + self.game_data.turn_loop[:winner_index]
         self.game_data.played_cards = []
-        self.server.send_all("UPDATE_TURN", played=self.game_data.played_cards)
