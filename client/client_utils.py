@@ -137,5 +137,5 @@ def load_card_image(player_names: list[str], card_ids: list[int]) -> dict[str, l
     player_cards_surfaces: dict = {player_names[0]: own_cards,
                                    player_names[1]: card_backsides_rot,
                                    player_names[2]: card_backsides,
-                                   player_names[3]: card_backsides_rot}
+                                   player_names[3]: card_backsides_rot.copy()}
     return player_cards_surfaces
