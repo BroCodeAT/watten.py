@@ -51,7 +51,6 @@ class NetworkClient:
         Setup needed attributes
         """
         self.ENCODING = "utf-8"
-        self.lock = multiprocessing.Lock()
         self.que = multiprocessing.Queue()
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.listener = multiprocessing.Process(target=self.recv_in_process, daemon=True)
@@ -71,11 +70,9 @@ class NetworkClient:
         None
         """
         length = len(data)
-        with self.lock:
-            self.server.send(length.to_bytes(16, "big"))
-            serv_length = int.from_bytes(self.server.recv(16), "big")
-            if length == serv_length:
-                self.server.send(data)
+        byte_length = length.to_bytes(16, "big")
+        self.server.send(byte_length)
+        self.server.send(data)
 
     def recv(self) -> bytes:
         """
@@ -86,10 +83,8 @@ class NetworkClient:
         -------
         bytes : The data received
         """
-        with self.lock:
-            length = int.from_bytes(self.server.recv(16), "big")
-            self.server.send(length.to_bytes(16, "big"))
-            data = self.server.recv(length)
+        length = int.from_bytes(self.server.recv(16), "big")
+        data = self.server.recv(length)
         return data
 
     def server_connect(self, name: str, host: str = "127.0.0.2", port: int = 3333) -> bool:
