@@ -239,8 +239,7 @@ class GameLogic:
             case "PLAY_CARD":
                 self.game_data.played_cards.append(CardBase(data.get("card")))
                 self.game_data.game_player.get(data.get("from")).cards.remove(data.get("card"))
-                print(self.game_data.played_cards)
-                self.server.send_all("UPDATE_TURN", played=tuple(map(int, self.game_data.played_cards)))
+                self.server.send_all("UPDATE_TURN", played=tuple(map(int, self.game_data.played_cards)), last_played=data.get("from"))
             case "BETTER_CARDS":
                 pass
 
