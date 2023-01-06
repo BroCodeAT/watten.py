@@ -202,8 +202,8 @@ class GameLogic:
         None
         """
         self.game_data.highest = CardBase.new_card(
-            self.game_data.game_player[self.game_data.game_loop[-1]].cards[-1].col(),
-            self.game_data.game_player[self.game_data.game_loop[0]].cards[-1].num()
+            self.game_data.game_player[self.game_data.game_loop[-1]].cards[0].col(),
+            self.game_data.game_player[self.game_data.game_loop[0]].cards[0].num()
         )
         if send:
             self.server.send_to("HIGHEST", self.game_data.game_loop[-1], highest=int(self.game_data.highest))
