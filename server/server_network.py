@@ -65,7 +65,6 @@ class NetworkServer:
         self.ENCODING = "utf-8"
         self.conn: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        self.lock: multiprocessing.Lock = multiprocessing.Lock()
         self.que: multiprocessing.Queue = multiprocessing.Queue()
         self.listeners: list[multiprocessing.Process] = []
 
@@ -88,11 +87,8 @@ class NetworkServer:
         None
         """
         length = len(data)
-        with self.lock:
-            conn.send(length.to_bytes(16, "big"))
-            serv_length = int.from_bytes(conn.recv(16), "big")
-            if length == serv_length:
-                conn.send(data)
+        conn.send(length.to_bytes(16, "big"))
+        conn.send(data)
 
     def recv(self, conn: socket.socket) -> bytes:
         """
@@ -108,10 +104,9 @@ class NetworkServer:
         -------
         bytes : The data received
         """
-        with self.lock:
-            length = int.from_bytes(conn.recv(16), "big")
-            conn.send(length.to_bytes(16, "big"))
-            data = conn.recv(length)
+        byte_length = conn.recv(16)
+        length = int.from_bytes(byte_length, "big")
+        data = conn.recv(length)
         return data
 
     def accept_clients(self, amount: int = 4) -> None:
