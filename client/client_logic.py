@@ -112,6 +112,8 @@ class ClientLogic:
 
             self.display_player_names()
 
+            self.display_highest()
+
             pygame.display.update()
             self.clock.tick(60)
 
@@ -148,6 +150,8 @@ class ClientLogic:
                     self.new_cards(recv)
                 case "PLAYER_TURN":
                     self.highlight_cards(recv)
+                case "HIGHEST":
+                    self.load_highest(recv)
                 case "UPDATE_TURN":
                     self.update_turn(recv)
                 case "TURN_WINNER":
@@ -251,6 +255,12 @@ class ClientLogic:
         self.game_data.game_display.blit(texts[2], texts[2].get_rect(center=rects[2].center))
         self.game_data.game_display.blit(texts[3], texts[3].get_rect(bottomright=rects[3].bottomright))
 
+    def display_highest(self) -> None:
+        if self.game_data.highest_surface:
+            self.game_data.game_display.blit(self.game_data.highest_surface, (900,615))
+        else:
+            pass
+
     def new_player_names(self, data: dict) -> None:
         """
         Add the player names to the game_data
@@ -319,4 +329,9 @@ class ClientLogic:
 
     def turn_winner(self, data: dict):
         self.game_data.played_ids.clear()
-        # TODO: show turn at the player who won the turn
+        #TODO: show turn at the player who won the turn
+
+    def load_highest(self, data: dict):
+        self.game_data.highest = data.get("highest")
+        self.game_data.highest_surface = utils.load_singe_card(self.game_data.highest)
+

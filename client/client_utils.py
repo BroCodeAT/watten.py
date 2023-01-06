@@ -139,3 +139,9 @@ def load_card_image(player_names: list[str], card_ids: list[int]) -> dict[str, l
                                    player_names[2]: card_backsides,
                                    player_names[3]: card_backsides_rot.copy()}
     return player_cards_surfaces
+
+def load_singe_card(card_id: int) -> pygame.Surface:
+    card_surface = pygame.image.load(fr"cards/id_{card_id}.png")
+    card_surface = pygame.transform.scale(card_surface, (100, 170))
+
+    return card_surface

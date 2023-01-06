@@ -35,3 +35,5 @@ class ClientGameData:
     player_cards_surfaces: dict[str, list[pygame.Surface]] = field(default_factory=dict)
     in_turn: bool = False
     click: bool = False
+    highest: int = field(default_factory=int)
+    highest_surface: pygame.Surface = None
