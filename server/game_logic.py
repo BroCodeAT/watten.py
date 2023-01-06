@@ -146,7 +146,7 @@ class GameLogic:
             self.server.send_to("PLAYER_TURN", client, available=list(map(int, available_cards)))
             data = self.server.receive_from_client(client)
             self.handle_response(data)
-            input("turn")
+            # input("turn")
 
     def deal_round(self) -> None:
         """
@@ -264,3 +264,4 @@ class GameLogic:
         winner_index = check_winner(self.game_data.played_cards, self.game_data.highest)
         self.server.send_all("TURN_WINNER", winner=list(self.game_data.game_loop)[winner_index])
         self.game_data.game_loop = self.game_data.game_loop[winner_index:] + self.game_data.game_loop[:winner_index]
+        self.game_data.played_cards = []

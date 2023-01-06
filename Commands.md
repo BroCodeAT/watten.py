@@ -46,7 +46,8 @@
 
 **Attributes:**
 - to: str → Name of the Client to send the Command to
-- played: list[int] → The cards that have been played already
+- played: list[CardBase] → The cards that have been played already
+- last_played: str → The Player who played the last card
 
 ### TURN_WINNER
     Send the name of the winner of the current turn
