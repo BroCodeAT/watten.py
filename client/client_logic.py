@@ -156,7 +156,7 @@ class ClientLogic:
                     self.update_turn(recv)
                 case "TURN_WINNER":
                     self.turn_winner(recv)
-                    # TODO: clear played cards
+                #TODO: add point_winner command
 
     def view_events(self, events: list[pygame.event.Event]) -> None:
         """
