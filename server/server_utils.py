@@ -59,12 +59,14 @@ def check_winner(played_cards: list[CardBase], highest: CardBase) -> int:
         else:
             # If the card is bigger than the current highest and
             # has the same color
-            if card > current_highest:
+            if card > current_highest and current_highest.num() != highest.num():
                 current_highest = card
             else:
                 # the current highest is not the highest color and
                 # the card is one of the highest color
-                if card == highest and current_highest != highest:
-                    current_highest = card
+                if card.col() == highest.col() and current_highest.col() != highest.col() and current_highest.num() != highest.num():
+                        current_highest = card
+                else:
+                    pass
 
     return played_cards.index(current_highest)
