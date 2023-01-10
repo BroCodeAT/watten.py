@@ -2,8 +2,28 @@ import random
 import queue
 
 from typing import Union
+from enum import Enum
 
 from cards_utils import *
+
+
+class CardColor(Enum):
+    Schell: int = 1
+    Herz: int = 2
+    Eichel: int = 3
+    Laub: int = 4
+
+
+class CardNumber(Enum):
+    Weli: int = 0
+    VII: int = 1
+    VIII: int = 2
+    IX: int = 3
+    X: int = 4
+    Unter: int = 5
+    Ober: int = 6
+    Koenig: int = 7
+    Ass: int = 8
 
 
 class CardBase:
@@ -24,7 +44,7 @@ class CardBase:
      3 - X
      4 - Unter
      5 - Ober
-     6 - König
+     6 - Koenig
      7 - Ass
 
     ...
@@ -190,7 +210,7 @@ class CardBase:
         if self.card_id == -1:
             return -1
         elif self.card_id == 32:
-            return 0
+            return 1
         else:
             return math.floor(int(self.card_id)/8) + 1
 
@@ -210,7 +230,7 @@ class CardBase:
             return (int(self.card_id) % 8) + 1
 
     @classmethod
-    def new_card(cls, col: int, num: int) -> "CardBase":
+    def new_card(cls, col: int | CardColor, num: int | CardNumber) -> "CardBase":
         """
         Get a new card with the given color and number
 
@@ -221,9 +241,14 @@ class CardBase:
         num : int
             The number of the new card
         """
+        if isinstance(col, CardColor):
+            col = col.value
+        if isinstance(num, CardNumber):
+            num = num.value
+
         if col == -1 and num == -1:
             return cls(-1)
-        elif col == 0 and num == 0:
+        elif col == 1 and num == 0:
             return cls(32)
         else:
             return cls((col - 1) * 8 + num - 1)
