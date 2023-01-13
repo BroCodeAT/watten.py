@@ -65,7 +65,6 @@ class GameData:
 
         self.game_player: dict[str, PlayerData] = {}
         self.turn_loop: list[str] = []
-        self.game_loop: list[str] = []
         self.last_won_point: list[str] = None
 
         self.highest: CardBase | None = None
