@@ -1,3 +1,4 @@
+import random
 import time
 
 from models import GameData, CardBase, PlayerData
@@ -73,13 +74,13 @@ class GameLogic:
         """
         self.server.accept_clients()
         gl = list(self.server.clients)
-        self.game_data.game_loop = gl
+        self.game_data.turn_loop = gl
         self.game_data.turn_loop = gl
         self.game_data.team1["player"] = [gl[0], gl[2]]
         self.game_data.team2["player"] = [gl[1], gl[3]]
 
-        for index, client in enumerate(self.game_data.game_loop):
-            self.server.send_to("PLAYER_NAMES", client, players=self.game_data.game_loop[index:] + self.game_data.game_loop[:index])
+        for index, client in enumerate(self.game_data.turn_loop):
+            self.server.send_to("PLAYER_NAMES", client, players=self.game_data.turn_loop[index:] + self.game_data.turn_loop[:index])
 
     def start_game_loop(self) -> None:
         """
@@ -108,10 +109,21 @@ class GameLogic:
 
         if self.game_data.team1.get("points") > self.game_data.team2.get("points"):
             self.game_data.team1["rounds"] += 1
+
+            start_player: str = random.choice(self.game_data.team2.get("player"))
+            start_index = self.game_data.turn_loop.index(start_player)
+            self.game_data.turn_loop = self.game_data.turn_loop[start_index:] + self.game_data.turn_loop[:start_index]
+
             self.server.send_all("ROUND_WINNER", winner=self.game_data.team1.get("player"))
         else:
             self.game_data.team2["rounds"] += 1
-            self.server.send_all("ROUND_WINNER", winner=self.game_data.team1.get("player"))
+            self.game_data.last_won_point = self.game_data.team2.get("player")
+
+            start_player: str = random.choice(self.game_data.team1.get("player"))
+            start_index = self.game_data.turn_loop.index(start_player)
+            self.game_data.turn_loop = self.game_data.turn_loop[start_index:] + self.game_data.turn_loop[:start_index]
+
+            self.server.send_all("ROUND_WINNER", winner=self.game_data.team2.get("player"))
 
         self.game_data.team1["points"] = 0
         self.game_data.team2["points"] = 0
@@ -137,7 +149,7 @@ class GameLogic:
             self.server.send_all("POINT_WINNER", winner=self.game_data.team1.get("player"))
         else:
             self.game_data.team2["points"] += 2
-            self.server.send_all("POINT_WINNER", winner=self.game_data.team1.get("player"))
+            self.server.send_all("POINT_WINNER", winner=self.game_data.team2.get("player"))
 
         self.game_data.team1["turns"] = 0
         self.game_data.team2["turns"] = 0
@@ -156,7 +168,7 @@ class GameLogic:
                 self.game_data.game_player.get(client).cards,
                 self.game_data.played_cards,
                 self.game_data.highest,
-                True if list(self.game_data.game_loop).index(client) in [0, 3] else False
+                True if list(self.game_data.turn_loop).index(client) in [0, 3] else False
             )
             self.server.send_to("PLAYER_TURN", client, available=list(map(int, available_cards)))
             data = self.server.receive_from_client(client)
@@ -174,7 +186,7 @@ class GameLogic:
         """
         # Dealing the cards to the client (serverside)
         for cards in [3, 2]:
-            for client in self.game_data.game_loop:
+            for client in self.game_data.turn_loop:
                 deal_cards = self.game_data.card_dek.deal_top_card(cards)
                 try:
                     self.game_data.game_player[client].cards.extend(deal_cards)
@@ -202,12 +214,12 @@ class GameLogic:
         None
         """
         self.game_data.highest = CardBase.new_card(
-            self.game_data.game_player[self.game_data.game_loop[-1]].cards[0].col(),
-            self.game_data.game_player[self.game_data.game_loop[0]].cards[0].num()
+            self.game_data.game_player[self.game_data.turn_loop[-1]].cards[0].col(),
+            self.game_data.game_player[self.game_data.turn_loop[0]].cards[0].num()
         )
         if send:
-            self.server.send_to("HIGHEST", self.game_data.game_loop[-1], highest=int(self.game_data.highest))
-            self.server.send_to("HIGHEST", self.game_data.game_loop[0], highest=int(self.game_data.highest))
+            self.server.send_to("HIGHEST", self.game_data.turn_loop[-1], highest=int(self.game_data.highest))
+            self.server.send_to("HIGHEST", self.game_data.turn_loop[0], highest=int(self.game_data.highest))
 
     def ask_for_start(self, delay: int = 10) -> None:
         """
@@ -217,7 +229,7 @@ class GameLogic:
         -------
         None
         """
-        players = [self.game_data.game_loop[0], self.game_data.game_loop[-1]]
+        players = [self.game_data.turn_loop[0], self.game_data.turn_loop[-1]]
         self.server.allow_responses_from(*players)
         time.sleep(delay)
         self.server.stop_responses()
@@ -271,7 +283,7 @@ class GameLogic:
         None
         """
         for cards in [3, 2]:
-            for client in [self.game_data.game_loop[0], self.game_data.game_loop[-1]]:
+            for client in [self.game_data.turn_loop[0], self.game_data.turn_loop[-1]]:
                 deal_cards = self.game_data.card_dek.deal_top_card(cards)
                 self.game_data.game_player[client].cards = []
                 self.game_data.game_player[client].cards.extend(deal_cards)
