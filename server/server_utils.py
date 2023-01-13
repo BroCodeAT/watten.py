@@ -50,7 +50,7 @@ def check_winner(played_cards: list[CardBase], highest: CardBase) -> int:
         if card.num() == highest.num():
             # If the card is the highest
             if card == highest:
-                return played_cards.index(card)
+                return list(map(int, played_cards)).index(int(card))
             # If the card is one of the highest and
             # the current highest is not one of the highest
             elif current_highest.num() != highest.num():
