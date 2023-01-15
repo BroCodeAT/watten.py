@@ -287,6 +287,9 @@ class ClientLogic:
         pygame.draw.rect(self.game_data.game_display, "white", stats_background)
 
         pygame.draw.line(self.game_data.game_display, "black", (1050, 70), (1250, 70), width=4)
+        pygame.draw.line(self.game_data.game_display, "black", (1150, 60), (1150, 200), width=4)
+
+        utils.draw_text("Team A", (255,255,255), self.game_data.game_display, 1050, 60)
 
     def new_player_names(self, data: dict) -> None:
         """
