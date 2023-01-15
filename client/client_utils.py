@@ -51,11 +51,11 @@ def load_card_image(player_names: list[str], card_ids: list[int]) -> dict[str, l
     """
     own_cards: list = []
     for card_id in card_ids:
-        own_card = pygame.image.load(fr"assert/images/game/cards/id_{card_id}.png")
+        own_card = pygame.image.load(fr"assets/images/game/cards/id_{card_id}.png")
         own_card = pygame.transform.scale(own_card, (100, 170))
         own_cards.append(own_card)
 
-    card_back = pygame.image.load(r"assert/images/game/cards/card_back.png")
+    card_back = pygame.image.load(r"assets/images/game/cards/card_back.png")
     card_back = pygame.transform.scale(card_back, (100, 170))
     card_back_rot = pygame.transform.rotate(card_back, 90)
 
@@ -75,7 +75,7 @@ def load_card_image(player_names: list[str], card_ids: list[int]) -> dict[str, l
 
 
 def load_singe_card(card_id: int) -> pygame.Surface:
-    card_surface = pygame.image.load(fr"assert/images/game/cards/id_{card_id}.png")
+    card_surface = pygame.image.load(fr"assets/images/game/cards/id_{card_id}.png")
     card_surface = pygame.transform.scale(card_surface, (100, 170))
 
     return card_surface

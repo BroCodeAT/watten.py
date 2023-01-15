@@ -68,7 +68,7 @@ class ClientLogic:
 
         self.debug = debug
 
-        self.background = pygame.image.load(r"assert/images/login/LoginWindow.png")
+        self.background = pygame.image.load(r"assets/images/login/background.png")
 
         if auto_setup:
             self.setup()
@@ -142,14 +142,15 @@ class ClientLogic:
 
             mouse_pos = pygame.mouse.get_pos()
             if start.collidepoint(mouse_pos):
-                self.game_data.username = self.game_data.username_inp.text
+                if self.game_data.username_inp.text != "":
+                    self.game_data.username = self.game_data.username_inp.text
 
-                conn = self.client.server_connect(self.game_data.username)
-                if conn is False:
-                    self.game_data.username = ""
-                else:
-                    self.background = pygame.image.load(r"assert\images\game\background.png")
-                    pygame.display.set_mode((1000, 700))
+                    conn = self.client.server_connect(self.game_data.username)
+                    if conn is False:
+                        self.game_data.username = ""
+                    else:
+                        self.background = pygame.image.load(r"assets\images\game\background.png")
+                        pygame.display.set_mode((1000, 700))
 
     def resolve_server_commands(self) -> None:
         """
@@ -176,7 +177,7 @@ class ClientLogic:
                     self.update_turn(recv)
                 case "TURN_WINNER":
                     self.turn_winner(recv)
-                #TODO: add point_winner command
+                # TODO: add point_winner command
 
     def view_events(self, events: list[pygame.event.Event]) -> None:
         """
@@ -198,7 +199,7 @@ class ClientLogic:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.game_data.click = True
             if event.type == pygame.MOUSEBUTTONUP:
-                self.game_data.click = False   
+                self.game_data.click = False
 
     def display_cards(self) -> None:
         """
@@ -217,9 +218,9 @@ class ClientLogic:
                 [3, 915, 0, 100, 80]]
 
             for player, x_start, x_step, y_start, y_step in player_card_coordinates:
-                #get player name
+                # get player name
                 player_name = self.game_data.player_names[player]
-                #get the card surfaces of the player 
+                # get the card surfaces of the player
                 player_surfaces = self.game_data.player_cards_surfaces.get(player_name)
 
                 for card_surface in player_surfaces:
@@ -248,9 +249,9 @@ class ClientLogic:
         y_start = 225
         x_step = 110
         for index, card in enumerate(self.game_data.played_ids):
-            img = pygame.image.load(fr"assert/images/game/cards/id_{card}.PNG")
+            img = pygame.image.load(fr"assets/images/game/cards/id_{card}.PNG")
             img = pygame.transform.scale(img, (100, 170))
-            self.game_data.game_display.blit(img, (x_start + x_step*index, y_start))
+            self.game_data.game_display.blit(img, (x_start + x_step * index, y_start))
 
     def display_player_names(self) -> None:
         """
@@ -277,16 +278,15 @@ class ClientLogic:
 
     def display_highest(self) -> None:
         if self.game_data.highest_surface:
-            self.game_data.game_display.blit(self.game_data.highest_surface, (900,615))
+            self.game_data.game_display.blit(self.game_data.highest_surface, (900, 615))
         else:
             pass
 
     def display_game_stats(self) -> None:
-        stats_background = pygame.Rect(1001,0,299,700)
+        stats_background = pygame.Rect(1001, 0, 299, 700)
         pygame.draw.rect(self.game_data.game_display, "white", stats_background)
 
-        pygame.draw.line(self.game_data.game_display, "black", (1050,70), (1250,70), width=4)
-
+        pygame.draw.line(self.game_data.game_display, "black", (1050, 70), (1250, 70), width=4)
 
     def new_player_names(self, data: dict) -> None:
         """
@@ -316,7 +316,7 @@ class ClientLogic:
         -------
         None
         """
-        self.game_data.card_ids = data.get("assert/images/game/cards")
+        self.game_data.card_ids = data.get("cards")
         self.game_data.player_cards_surfaces = utils.load_card_image(self.game_data.player_names, self.game_data.card_ids)
 
     def highlight_cards(self, data: dict) -> None:
@@ -340,7 +340,7 @@ class ClientLogic:
         for card_id in to_highlight:
             pos = self.game_data.card_ids.index(card_id)
             self.game_data.highlighted_pos.append(pos)
-    
+
     def play_card(self, played_pos: int, player_name: str):
         self.game_data.highlighted_pos.clear()
         card_id = self.game_data.card_ids.pop(played_pos)
@@ -356,9 +356,8 @@ class ClientLogic:
 
     def turn_winner(self, data: dict):
         self.game_data.played_ids.clear()
-        #TODO: show turn at the player who won the turn
+        # TODO: show turn at the player who won the turn
 
     def load_highest(self, data: dict):
         self.game_data.highest = data.get("highest")
         self.game_data.highest_surface = utils.load_singe_card(self.game_data.highest)
-
