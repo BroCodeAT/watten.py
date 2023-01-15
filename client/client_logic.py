@@ -137,15 +137,19 @@ class ClientLogic:
             pos = pygame.mouse.get_pos()
             self.game_data.username_inp.display_current_state(pos, events)
             self.game_data.password_inp.display_current_state(pos, events)
+            start = pygame.Rect(100, 250, 200, 50)
+            pygame.draw.rect(self.game_data.game_display, (0, 0, 0), start)
 
-        """if not self.game_data.username:
-            # self.game_data.username = utils.text_input(self.game_data.game_display, self.clock)
-            # conn = self.client.server_connect(self.game_data.username)
-            if conn is False:
-                self.game_data.username = ""
-        else:
-            self.background = pygame.image.load(r"assert\images\game\GameWindow.png")
-            pygame.display.set_mode((1000, 700))"""
+            mouse_pos = pygame.mouse.get_pos()
+            if start.collidepoint(mouse_pos):
+                self.game_data.username = self.game_data.username_inp.text
+
+                conn = self.client.server_connect(self.game_data.username)
+                if conn is False:
+                    self.game_data.username = ""
+                else:
+                    self.background = pygame.image.load(r"assert\images\game\background.png")
+                    pygame.display.set_mode((1000, 700))
 
     def resolve_server_commands(self) -> None:
         """
