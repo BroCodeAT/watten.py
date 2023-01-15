@@ -6,17 +6,65 @@ from dataclasses import dataclass, field
 
 class StateInstance:
     def __init__(self, pos: tuple[int, int], surface: pygame.Surface,
-                 state_images: str = r"assets"):
-        pass
+                 state_images: str):
+        self.pos = [p - 6 for p in pos]
+        self.surface = surface
+        self.click: bool = False
 
-class TextInput:
+        self.images = self.load_state_images(state_images)
+
+        self.current_state = "default"
+
+        self.rect: pygame.Rect | None = None
+
+    def display_current_state(self, mouse_pos: tuple[int, int], events: list[pygame.event.Event]):
+        ...
+
+    @staticmethod
+    def load_state_images(path: str) -> dict[str, pygame.Surface]:
+        states: dict[str, pygame.Surface] = {}
+        for image in os.listdir(path):
+            states[image[:-4]] = pygame.image.load(fr"{path}\{image}")
+        return states
+
+
+class Button(StateInstance):
+    def __init__(self, pos: tuple[int, int], surface: pygame.Surface,
+                 button_images: str = r"assets/images/login/button"):
+        super().__init__(pos, surface, button_images)
+        self.selected: bool = False
+
+    def display_current_state(self, mouse_pos: tuple[int, int], events: list[pygame.event.Event]):
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.click = True
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.click = False
+
+        if self.rect:
+            if self.rect.collidepoint(*mouse_pos):
+                if self.click:
+                    self.selected = True
+                    self.current_state = "selected"
+                else:
+                    if not self.selected:
+                        self.current_state = "hover"
+            else:
+                if not self.selected:
+                    self.current_state = "default"
+
+        if self.current_state == "default":
+            self.rect = self.surface.blit(self.images.get(self.current_state), [x + 6 for x in self.pos])
+        else:
+            self.rect = self.surface.blit(self.images.get(self.current_state), self.pos)
+
+
+class TextInput(StateInstance):
     def __init__(self, pos: tuple[int, int], surface: pygame.Surface,
                  min_length: int = 3, max_length: int = 10, hide: bool = False,
                  input_images: str = r"assets/images/login/input",
                  font: str = r"assets/font/default.ttf", text_size: int = 40):
-        self.pos = [p - 6 for p in pos]
-        self.surface = surface
-        self.click: bool = False
+        super().__init__(pos, surface, input_images)
         self.selected: bool = False
         self.next_selected: bool = False
 
@@ -27,10 +75,6 @@ class TextInput:
         self.text = ""
         self.min_length = min_length
         self.max_length = max_length
-
-        self.images = self.load_state_images(input_images)
-        self.rect: pygame.Rect | None = None
-        self.current_state = "default"
 
         self.others: List["TextInput"] = []
 
@@ -94,13 +138,6 @@ class TextInput:
             if other.next_selected:
                 self.selected = False
 
-    @staticmethod
-    def load_state_images(path: str) -> dict[str, pygame.Surface]:
-        states: dict[str, pygame.Surface] = {}
-        for image in os.listdir(path):
-            states[image[:-4]] = pygame.image.load(fr"{path}\{image}")
-        return states
-
 
 @dataclass
 class ClientGameData:
@@ -140,3 +177,4 @@ class ClientGameData:
 
     username_inp: TextInput = field(default=TextInput)
     password_inp: TextInput = field(default=TextInput)
+    start_button: Button = field(default=Button)

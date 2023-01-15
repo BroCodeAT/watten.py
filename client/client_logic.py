@@ -1,9 +1,12 @@
+import os
 import pygame
+
+from pygame._sdl2.video import Window
 
 import client_utils as utils
 
 from client_network import NetworkClient
-from client_models import ClientGameData, TextInput
+from client_models import ClientGameData, TextInput, Button
 
 
 class ClientLogic:
@@ -91,6 +94,7 @@ class ClientLogic:
         self.game_data.password_inp = TextInput((179, 171), self.game_data.game_display, hide=True)
         self.game_data.username_inp.others.append(self.game_data.password_inp)
         self.game_data.password_inp.others.append(self.game_data.username_inp)
+        self.game_data.start_button = Button((26, 227), self.game_data.game_display)
 
     def start_game_loop(self) -> None:
         """
@@ -137,11 +141,10 @@ class ClientLogic:
             pos = pygame.mouse.get_pos()
             self.game_data.username_inp.display_current_state(pos, events)
             self.game_data.password_inp.display_current_state(pos, events)
-            start = pygame.Rect(100, 250, 200, 50)
-            pygame.draw.rect(self.game_data.game_display, (0, 0, 0), start)
+            self.game_data.start_button.display_current_state(pos, events)
 
             mouse_pos = pygame.mouse.get_pos()
-            if start.collidepoint(mouse_pos):
+            if self.game_data.start_button.selected:
                 if self.game_data.username_inp.text != "":
                     self.game_data.username = self.game_data.username_inp.text
 
@@ -150,7 +153,10 @@ class ClientLogic:
                         self.game_data.username = ""
                     else:
                         self.background = pygame.image.load(r"assets\images\game\background.png")
-                        pygame.display.set_mode((1000, 700))
+                        window = Window.from_display_module()
+                        window.position = (300, 200)
+                        pygame.display.set_mode((1300, 700))
+                        # os.environ['SDL_VIDEO_WINDOW_POS'] = "100,100"
 
     def resolve_server_commands(self) -> None:
         """
