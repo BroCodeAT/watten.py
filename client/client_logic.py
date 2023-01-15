@@ -97,6 +97,7 @@ class ClientLogic:
         None
         """
         while True:
+            self.game_data.game_display.fill("white")
             self.game_data.game_display.blit(self.background, (0, 0))
             events = pygame.event.get()
 
@@ -113,6 +114,8 @@ class ClientLogic:
             self.display_player_names()
 
             self.display_highest()
+
+            self.display_game_stats()
 
             pygame.display.update()
             self.clock.tick(60)
@@ -260,6 +263,13 @@ class ClientLogic:
             self.game_data.game_display.blit(self.game_data.highest_surface, (900,615))
         else:
             pass
+
+    def display_game_stats(self) -> None:
+        stats_background = pygame.Rect(1001,0,299,700)
+        pygame.draw.rect(self.game_data.game_display, "white", stats_background)
+
+        pygame.draw.line(self.game_data.game_display, "black", (1050,70), (1250,70), width=4)
+
 
     def new_player_names(self, data: dict) -> None:
         """
