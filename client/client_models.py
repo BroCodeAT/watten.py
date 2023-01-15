@@ -4,11 +4,16 @@ import string
 from dataclasses import dataclass, field
 
 
+class StateInstance:
+    def __init__(self, pos: tuple[int, int], surface: pygame.Surface,
+                 state_images: str = r"assets"):
+        pass
+
 class TextInput:
     def __init__(self, pos: tuple[int, int], surface: pygame.Surface,
                  min_length: int = 3, max_length: int = 10, hide: bool = False,
-                 input_images: str = r"assert/images/login/input",
-                 font: str = r"assert/font/default.ttf", text_size: int = 40):
+                 input_images: str = r"assets/images/login/input",
+                 font: str = r"assets/font/default.ttf", text_size: int = 40):
         self.pos = [p - 6 for p in pos]
         self.surface = surface
         self.click: bool = False
