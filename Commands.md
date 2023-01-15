@@ -33,6 +33,7 @@
 **Attributes:**
 - to: str → Name of the Client to send the Command to
 - highest: int → The ID of the highest card
+- showed: list[int] → List of two cards, the cards the other player showed you and your card you showed the other player
 
 ### PLAYER_TURN
     A Client has to play a card
