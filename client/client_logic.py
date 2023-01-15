@@ -3,7 +3,7 @@ import pygame
 import client_utils as utils
 
 from client_network import NetworkClient
-from client_models import ClientGameData
+from client_models import ClientGameData, TextInput
 
 
 class ClientLogic:
@@ -68,7 +68,7 @@ class ClientLogic:
 
         self.debug = debug
 
-        self.background = pygame.image.load(r"cards/background.png")
+        self.background = pygame.image.load(r"assert/images/login/LoginWindow.png")
 
         if auto_setup:
             self.setup()
@@ -82,11 +82,15 @@ class ClientLogic:
         None
         """
         pygame.init()
-
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("Watten")
         # Pygame now allows natively to enable key repeat:
         pygame.key.set_repeat(200, 25)
+
+        self.game_data.username_inp = TextInput((179, 113), self.game_data.game_display)
+        self.game_data.password_inp = TextInput((179, 171), self.game_data.game_display, hide=True)
+        self.game_data.username_inp.others.append(self.game_data.password_inp)
+        self.game_data.password_inp.others.append(self.game_data.username_inp)
 
     def start_game_loop(self) -> None:
         """
@@ -100,7 +104,7 @@ class ClientLogic:
             self.game_data.game_display.blit(self.background, (0, 0))
             events = pygame.event.get()
 
-            self.connect_to_server()
+            self.connect_to_server(events)
 
             self.resolve_server_commands()
 
@@ -117,7 +121,7 @@ class ClientLogic:
             pygame.display.update()
             self.clock.tick(60)
 
-    def connect_to_server(self) -> None:
+    def connect_to_server(self, events: list[pygame.event.Event]) -> None:
         """
         Try to connect to the Server after username input
 
@@ -126,10 +130,19 @@ class ClientLogic:
         None
         """
         if not self.game_data.username:
-            self.game_data.username = utils.text_input(self.game_data.game_display, self.clock)
-            conn = self.client.server_connect(self.game_data.username)
+
+            pos = pygame.mouse.get_pos()
+            self.game_data.username_inp.display_current_state(pos, events)
+            self.game_data.password_inp.display_current_state(pos, events)
+
+        """if not self.game_data.username:
+            # self.game_data.username = utils.text_input(self.game_data.game_display, self.clock)
+            # conn = self.client.server_connect(self.game_data.username)
             if conn is False:
                 self.game_data.username = ""
+        else:
+            self.background = pygame.image.load(r"assert\images\game\GameWindow.png")
+            pygame.display.set_mode((1000, 700))"""
 
     def resolve_server_commands(self) -> None:
         """
@@ -206,7 +219,7 @@ class ClientLogic:
                     if player == 0:
                         pointer = pygame.mouse.get_pos()
                         reference_rect = card_surface.get_rect().move(x_start, y_start)
-                        if player_surfaces.index(card_surface) in self.game_data.highlighted_pos and reference_rect.collidepoint(pointer) and self.game_data.in_turn:
+                        if player_surfaces.index(card_surface) in self.game_data.highlighted_pos and reference_rect.collidepoint(pointer) and self.game_data.in_turn == self.game_data.username:
                             y_start = 460
                             if self.game_data.click:
                                 self.play_card(player_surfaces.index(card_surface), player_name)
@@ -228,7 +241,7 @@ class ClientLogic:
         y_start = 225
         x_step = 110
         for index, card in enumerate(self.game_data.played_ids):
-            img = pygame.image.load(fr"cards/id_{card}.PNG")
+            img = pygame.image.load(fr"assert/images/game/cards/id_{card}.PNG")
             img = pygame.transform.scale(img, (100, 170))
             self.game_data.game_display.blit(img, (x_start + x_step*index, y_start))
 
@@ -289,7 +302,7 @@ class ClientLogic:
         -------
         None
         """
-        self.game_data.card_ids = data.get("cards")
+        self.game_data.card_ids = data.get("assert/images/game/cards")
         self.game_data.player_cards_surfaces = utils.load_card_image(self.game_data.player_names, self.game_data.card_ids)
 
     def highlight_cards(self, data: dict) -> None:
@@ -306,7 +319,7 @@ class ClientLogic:
         -------
         None
         """
-        self.game_data.in_turn = True
+        self.game_data.in_turn = self.game_data.username
 
         to_highlight = data.get("available")
 
