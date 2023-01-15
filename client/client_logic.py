@@ -271,10 +271,10 @@ class ClientLogic:
 
         # List of the rectangular to center the text to
         rects = [pygame.Rect(225, 640, 540, 60), pygame.Rect(0, 40, 200, 60), pygame.Rect(290, 75, 420, 60), pygame.Rect(800, 40, 200, 60)]
-        texts = [pygame.font.Font(None, 50).render(self.game_data.player_names[0], True, (12, 255, 255)),
-                 pygame.font.Font(None, 40).render(self.game_data.player_names[1], True, (12, 255, 255)),
-                 pygame.font.Font(None, 40).render(self.game_data.player_names[2], True, (12, 255, 255)),
-                 pygame.font.Font(None, 40).render(self.game_data.player_names[3], True, (12, 255, 255))]
+        texts = [pygame.font.Font(self.game_data.font_path, 50).render(self.game_data.player_names[0], True, (12, 255, 255)),
+                 pygame.font.Font(self.game_data.font_path, 40).render(self.game_data.player_names[1], True, (12, 255, 255)),
+                 pygame.font.Font(self.game_data.font_path, 40).render(self.game_data.player_names[2], True, (12, 255, 255)),
+                 pygame.font.Font(self.game_data.font_path, 40).render(self.game_data.player_names[3], True, (12, 255, 255))]
 
         self.game_data.game_display.blit(texts[0], texts[0].get_rect(center=rects[0].center))
         self.game_data.game_display.blit(texts[1], texts[1].get_rect(bottomleft=rects[1].bottomleft))

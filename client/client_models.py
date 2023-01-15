@@ -174,6 +174,7 @@ class ClientGameData:
     click: bool = False
     highest: int = field(default_factory=int)
     highest_surface: pygame.Surface = None
+    font_path: str = os.path.abspath("assets/font/default.ttf")
 
     username_inp: TextInput = field(default=TextInput)
     password_inp: TextInput = field(default=TextInput)
