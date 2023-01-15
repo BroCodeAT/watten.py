@@ -156,7 +156,6 @@ class ClientLogic:
                         window = Window.from_display_module()
                         window.position = (300, 200)
                         pygame.display.set_mode((1300, 700))
-                        # os.environ['SDL_VIDEO_WINDOW_POS'] = "100,100"
 
     def resolve_server_commands(self) -> None:
         """
