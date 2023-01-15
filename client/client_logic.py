@@ -153,8 +153,8 @@ class ClientLogic:
                         self.game_data.username = ""
                     else:
                         self.background = pygame.image.load(r"assets\images\game\background.png")
-                        window = Window.from_display_module()
-                        window.position = (300, 200)
+                        # window = Window.from_display_module()
+                        # window.position = (300, 200)
                         pygame.display.set_mode((1300, 700))
 
     def resolve_server_commands(self) -> None:
