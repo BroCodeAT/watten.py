@@ -1,4 +1,7 @@
+import os
 import pygame
+
+from pygame._sdl2.video import Window
 
 import client_utils as utils
 
@@ -150,7 +153,10 @@ class ClientLogic:
                         self.game_data.username = ""
                     else:
                         self.background = pygame.image.load(r"assets\images\game\background.png")
+                        window = Window.from_display_module()
+                        window.position = (300, 200)
                         pygame.display.set_mode((1300, 700))
+                        # os.environ['SDL_VIDEO_WINDOW_POS'] = "100,100"
 
     def resolve_server_commands(self) -> None:
         """

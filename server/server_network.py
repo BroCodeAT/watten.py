@@ -132,7 +132,7 @@ class NetworkServer:
             while name in self.clients:
                 self.send(conn, json.dumps({"command": "CONNECTION_REFUSED"}).encode(self.ENCODING))
                 conn.close()
-                conn, addr = self.con.accept()
+                conn, addr = self.conn.accept()
                 name = self.recv(conn).decode(self.ENCODING)
             self.clients[name] = ClientData.new_conn(name, conn, addr)
             print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount} ({addr[0]}:{addr[1]})")
