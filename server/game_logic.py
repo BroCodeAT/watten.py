@@ -290,6 +290,6 @@ class GameLogic:
 
     def resolve_turn_winner(self):
         winner_index = check_winner(self.game_data.played_cards, self.game_data.highest)
-        self.server.send_all("TURN_WINNER", winner=list(self.game_data.turn_loop)[winner_index])
+        self.server.send_all("TURN_WINNER", winner=list(self.game_data.turn_loop)[winner_index], team1=self.game_data.team1, team2=self.game_data.team2)
         self.game_data.turn_loop = self.game_data.turn_loop[winner_index:] + self.game_data.turn_loop[:winner_index]
         self.game_data.played_cards = []
