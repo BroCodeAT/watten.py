@@ -49,28 +49,26 @@ def load_card_image(player_names: list[str], card_ids: list[int]) -> dict[str, l
     -------
     dict[str, list[pygame.Surface]]: The name associated to a list of the surfaces of the cards
     """
+    card_back = pygame.image.load(r"assets/images/game/cards/card_back.png")
+    card_back = pygame.transform.scale(card_back, (100, 170))
+    card_back_rot = pygame.transform.rotate(card_back, 90)
+
+    half_card_back = pygame.image.load(r"assets/images/game/cards/card_back_half.png")
+    half_card_back = pygame.transform.scale(half_card_back,(100,85))
+    half_card_back_rot = pygame.transform.rotate(card_back, 90)
+
+
     own_cards: list = []
     for card_id in card_ids:
         own_card = pygame.image.load(fr"assets/images/game/cards/id_{card_id}.png")
         own_card = pygame.transform.scale(own_card, (100, 170))
         own_cards.append(own_card)
-
-    card_back = pygame.image.load(r"assets/images/game/cards/card_back.png")
-    card_back = pygame.transform.scale(card_back, (100, 170))
-    card_back_rot = pygame.transform.rotate(card_back, 90)
-
-    card_backsides: list = []
-    for i in range(5):
-        card_backsides.append(card_back)
-
-    card_backsides_rot: list = []
-    for i in range(5):
-        card_backsides_rot.append(card_back_rot)
+        
 
     player_cards_surfaces: dict = {player_names[0]: own_cards,
-                                   player_names[1]: card_backsides_rot,
-                                   player_names[2]: card_backsides,
-                                   player_names[3]: card_backsides_rot.copy()}
+                                   player_names[1]: [card_back_rot for i in range(5)],
+                                   player_names[2]: [card_back for i in range(5)],
+                                   player_names[3]: [half_card_back_rot for i in range(5)]}
     return player_cards_surfaces
 
 
