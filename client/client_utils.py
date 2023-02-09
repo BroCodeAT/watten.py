@@ -55,7 +55,7 @@ def load_card_image(player_names: list[str], card_ids: list[int]) -> dict[str, l
 
     half_card_back = pygame.image.load(r"assets/images/game/cards/card_back_half.png")
     half_card_back = pygame.transform.scale(half_card_back,(100,85))
-    half_card_back_rot = pygame.transform.rotate(card_back, 90)
+    half_card_back_rot = pygame.transform.rotate(half_card_back, 90)
 
 
     own_cards: list = []
