@@ -288,9 +288,15 @@ class ClientLogic:
             pass
 
     def display_game_stats(self) -> None:
-        #TODO: display game stats
-        pass
+        utils.draw_text(str(self.game_data.turns[0]), (255,255,255), self.game_data.game_display, 1123, 80, 32)
+        utils.draw_text(str(self.game_data.turns[1]), (255,255,255), self.game_data.game_display, 1227, 80, 32)
 
+        utils.draw_text(str(self.game_data.points[0]), (255,255,255), self.game_data.game_display, 1120, 117, 32)
+        utils.draw_text(str(self.game_data.points[1]), (255,255,255), self.game_data.game_display, 1224, 117, 32)
+
+        utils.draw_text(str(self.game_data.rounds[0]), (255,255,255), self.game_data.game_display, 1116, 154, 32)
+        utils.draw_text(str(self.game_data.rounds[1]), (255,255,255), self.game_data.game_display, 1220, 154, 32)
+        
     def new_player_names(self, data: dict) -> None:
         """
         Add the player names to the game_data
@@ -357,8 +363,34 @@ class ClientLogic:
         if last_player != self.game_data.username:
             self.game_data.player_cards_surfaces[last_player].pop(0)
 
-    def turn_winner(self, data: dict):
+    def turn_winner(self, data: dict) -> None:
+        """
+        Get the new gamestats and show which player won the turn
+
+        team_template:
+            {"player": [],
+            "rounds": 0,
+            "points": 0,
+            "turns": 0}
+        
+        Parameters
+        ----------
+        data : dict
+            The command data including the 'team1' and 'team2' key
+
+        Returns
+        -------
+        None
+        """
         self.game_data.played_ids.clear()
+
+        team1:dict = data.get("team1")
+        team2:dict = data.get("team2")
+
+        self.game_data.turns = (team1.get("turns"), team2.get("turns"))
+        self.game_data.points = (team1.get("points"), team2.get("points"))
+        self.game_data.rounds = (team1.get("rounds"), team2.get("rounds"))
+
         # TODO: show turn at the player who won the turn
 
     def load_highest(self, data: dict):

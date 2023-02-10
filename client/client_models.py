@@ -179,3 +179,7 @@ class ClientGameData:
     username_inp: TextInput = field(default=TextInput)
     password_inp: TextInput = field(default=TextInput)
     start_button: Button = field(default=Button)
+
+    turns: tuple = (0,0)
+    points: tuple = (0,0)
+    rounds: tuple = (0,0)
