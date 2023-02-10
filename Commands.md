@@ -68,6 +68,15 @@
 - team1: dict → The names of the players in the team and the stats of the team
 - team2: dict → The names of the players in the team and the stats of the team
 
+### ROUND_WINNER
+    Send the name of the winners to all the players
+
+**Attributes:**
+- to: str → Name of the Client to send the Command to
+- winner: list[str] → The names of the winner
+- team1: dict → The names of the players in the team and the stats of the team
+- team2: dict → The names of the players in the team and the stats of the team
+
 # Client to Server
 
 ---
