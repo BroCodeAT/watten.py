@@ -146,10 +146,10 @@ class GameLogic:
 
         if self.game_data.team1.get("turns") > self.game_data.team2.get("turns"):
             self.game_data.team1["points"] += 2
-            self.server.send_all("POINT_WINNER", winner=self.game_data.team1.get("player"))
+            self.server.send_all("POINT_WINNER", winner=self.game_data.team1.get("player"), team1=self.game_data.team1, team2=self.game_data.team2)
         else:
             self.game_data.team2["points"] += 2
-            self.server.send_all("POINT_WINNER", winner=self.game_data.team2.get("player"))
+            self.server.send_all("POINT_WINNER", winner=self.game_data.team2.get("player"), team1=self.game_data.team1, team2=self.game_data.team2)
 
         self.game_data.team1["turns"] = 0
         self.game_data.team2["turns"] = 0
