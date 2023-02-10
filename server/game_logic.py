@@ -144,6 +144,9 @@ class GameLogic:
             self.start_player_turns()
             self.resolve_turn_winner()
 
+        self.game_data.team1["turns"] = 0
+        self.game_data.team2["turns"] = 0            
+
         if self.game_data.team1.get("turns") > self.game_data.team2.get("turns"):
             self.game_data.team1["points"] += 2
             self.server.send_all("POINT_WINNER", winner=self.game_data.team1.get("player"), team1=self.game_data.team1, team2=self.game_data.team2)
@@ -151,8 +154,6 @@ class GameLogic:
             self.game_data.team2["points"] += 2
             self.server.send_all("POINT_WINNER", winner=self.game_data.team2.get("player"), team1=self.game_data.team1, team2=self.game_data.team2)
 
-        self.game_data.team1["turns"] = 0
-        self.game_data.team2["turns"] = 0
 
     def start_player_turns(self) -> None:
         """
