@@ -184,7 +184,6 @@ class ClientLogic:
                     self.turn_winner(recv)
                 case "POINT_WINNER":
                     self.point_winner(recv)
-                # TODO: add point_winner command
 
     def view_events(self, events: list[pygame.event.Event]) -> None:
         """
