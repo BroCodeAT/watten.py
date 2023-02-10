@@ -184,6 +184,8 @@ class ClientLogic:
                     self.turn_winner(recv)
                 case "POINT_WINNER":
                     self.point_winner(recv)
+                case "ROUND_WINNER":
+                    self.round_winner(recv)
 
     def view_events(self, events: list[pygame.event.Event]) -> None:
         """
@@ -397,6 +399,32 @@ class ClientLogic:
     def point_winner(self, data: dict) -> None:
         """
         Get the new gamestats and show which player won the point
+
+        team_template:
+            {"player": [],
+            "rounds": 0,
+            "points": 0,
+            "turns": 0}
+        
+        Parameters
+        ----------
+        data : dict
+            The command data including the 'team1' and 'team2' key
+
+        Returns
+        -------
+        None
+        """
+        team1:dict = data.get("team1")
+        team2:dict = data.get("team2")
+
+        self.game_data.turns = (team1.get("turns"), team2.get("turns"))
+        self.game_data.points = (team1.get("points"), team2.get("points"))
+        self.game_data.rounds = (team1.get("rounds"), team2.get("rounds"))
+
+    def round_winner(self, data:dict) -> None:
+        """
+        Get the new gamestats and show which player won the round
 
         team_template:
             {"player": [],

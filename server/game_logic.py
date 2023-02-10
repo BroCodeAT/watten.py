@@ -114,7 +114,7 @@ class GameLogic:
             start_index = self.game_data.turn_loop.index(start_player)
             self.game_data.turn_loop = self.game_data.turn_loop[start_index:] + self.game_data.turn_loop[:start_index]
 
-            self.server.send_all("ROUND_WINNER", winner=self.game_data.team1.get("player"))
+            self.server.send_all("ROUND_WINNER", winner=self.game_data.team1.get("player"), team1=self.game_data.team1, team2=self.game_data.team2)
         else:
             self.game_data.team2["rounds"] += 1
             self.game_data.last_won_point = self.game_data.team2.get("player")
@@ -123,7 +123,7 @@ class GameLogic:
             start_index = self.game_data.turn_loop.index(start_player)
             self.game_data.turn_loop = self.game_data.turn_loop[start_index:] + self.game_data.turn_loop[:start_index]
 
-            self.server.send_all("ROUND_WINNER", winner=self.game_data.team2.get("player"))
+            self.server.send_all("ROUND_WINNER", winner=self.game_data.team2.get("player"), team1=self.game_data.team1, team2=self.game_data.team2)
 
         self.game_data.team1["points"] = 0
         self.game_data.team2["points"] = 0
