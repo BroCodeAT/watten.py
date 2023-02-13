@@ -1,4 +1,5 @@
 import os
+import sys
 import pygame
 import string
 from dataclasses import dataclass, field
@@ -55,6 +56,8 @@ class Button(StateInstance):
 
         if self.current_state == "default":
             self.rect = self.surface.blit(self.images.get(self.current_state), [x + 6 for x in self.pos])
+        elif self.current_state == "hover":
+            self.rect = self.surface.blit(self.images.get(self.current_state), [x + 3 for x in self.pos])
         else:
             self.rect = self.surface.blit(self.images.get(self.current_state), self.pos)
 
@@ -76,7 +79,7 @@ class TextInput(StateInstance):
         self.min_length = min_length
         self.max_length = max_length
 
-        self.others: List["TextInput"] = []
+        self.others: list["TextInput"] = []
 
     def display_current_state(self, mouse_pos: tuple[int, int], events: list[pygame.event.Event]):
         for event in events:
