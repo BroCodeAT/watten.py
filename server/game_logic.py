@@ -154,6 +154,7 @@ class GameLogic:
             self.game_data.team2["points"] += 2
             self.server.send_all("POINT_WINNER", winner=self.game_data.team2.get("player"), team1=self.game_data.team1, team2=self.game_data.team2)
 
+        self.game_data.turn_loop = self.game_data.turn_loop[1:] + self.game_data.turn_loop[0]
 
     def start_player_turns(self) -> None:
         """
