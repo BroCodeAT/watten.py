@@ -1,4 +1,5 @@
 import sys
+import argon2
 import pygame
 from client_models import TextInput
 
@@ -77,3 +78,8 @@ def load_singe_card(card_id: int) -> pygame.Surface:
     card_surface = pygame.transform.scale(card_surface, (100, 170))
 
     return card_surface
+
+
+def get_hashed_password(clear_password: str) -> bytes:
+    hashed_password = argon2.hash_password(bytes(clear_password,'utf-8'))
+    return hashed_password

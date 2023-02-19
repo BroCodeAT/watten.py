@@ -87,7 +87,7 @@ class NetworkClient:
         data = self.server.recv(length)
         return data
 
-    def server_connect(self, name: str, host: str = "127.0.0.2", port: int = 3333) -> bool:
+    def server_connect(self, name: str, pwd: bytes, host: str = "127.0.0.2", port: int = 3333) -> bool:
         """
         Connect to the server with a given name
 

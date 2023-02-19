@@ -145,10 +145,11 @@ class ClientLogic:
 
             mouse_pos = pygame.mouse.get_pos()
             if self.game_data.start_button.selected:
-                if self.game_data.username_inp.text != "":
+                if self.game_data.username_inp.text != "" and self.game_data.password_inp.text != "":
                     self.game_data.username = self.game_data.username_inp.text
+                    password = utils.get_hashed_password(self.game_data.password_inp.text)
 
-                    conn = self.client.server_connect(self.game_data.username)
+                    conn = self.client.server_connect(self.game_data.username, password)
                     if conn is False:
                         self.game_data.username = ""
                     else:
