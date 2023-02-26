@@ -87,7 +87,7 @@ class NetworkClient:
         data = self.server.recv(length)
         return data
 
-    def server_connect(self, name: str, pwd: bytes, host: str = "127.0.0.2", port: int = 3333) -> bool:
+    def server_connect(self, name: str, pwd: str, host: str = "127.0.0.2", port: int = 3333) -> bool:
         """
         Connect to the server with a given name
 
@@ -105,7 +105,9 @@ class NetworkClient:
 
         """
         self.server.connect((host, port))
-        self.send(name.encode())
+        login_credentials  = json.dumps({"user": name, "password": pwd})
+    
+        self.send(login_credentials.encode())
         resp = self.recv_from_server()
         if resp.get("command") == "CONNECTED":
             if resp.get("to") == name:

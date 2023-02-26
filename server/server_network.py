@@ -3,6 +3,7 @@ import socket
 import multiprocessing
 from typing import Dict, Any
 from models import ClientData
+from database import Database
 
 
 class NetworkServer:
@@ -50,7 +51,7 @@ class NetworkServer:
     wait_for_response(client: str) -> None
         Wait for Responses from a client
     """
-    def __init__(self, host: str = "127.0.0.2", port: int = 3333):
+    def __init__(self, db:Database, host: str = "127.0.0.2", port: int = 3333):
         """
         Initialize a new NetworkServer to handle the network
 
@@ -61,6 +62,7 @@ class NetworkServer:
         port : int
             The Port the server will be bind to
         """
+        self.db = db
         self.clients: dict[str, ClientData] = {}
         self.ENCODING = "utf-8"
         self.conn: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -125,18 +127,27 @@ class NetworkServer:
         None
         """
         self.conn.listen(4)
+        #i=0
         for i in range(amount):
             conn, addr = self.conn.accept()
 
-            name = self.recv(conn).decode(self.ENCODING)
+            login_crerdentials: dict = json.loads(self.recv(conn).decode(self.ENCODING))
+            name = login_crerdentials.get("user")
+
             while name in self.clients:
                 self.send(conn, json.dumps({"command": "CONNECTION_REFUSED"}).encode(self.ENCODING))
                 conn.close()
                 conn, addr = self.conn.accept()
                 name = self.recv(conn).decode(self.ENCODING)
-            self.clients[name] = ClientData.new_conn(name, conn, addr)
-            print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount} ({addr[0]}:{addr[1]})")
-            self.send_to("CONNECTED", name)
+            
+            #checking if the user exists and if the password is correct
+            if self.db.verify_user(name, login_crerdentials.get("password")):
+                self.clients[name] = ClientData.new_conn(name, conn, addr)
+                print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount} ({addr[0]}:{addr[1]})")
+                self.send_to("CONNECTED", name)
+            else:
+                self.send(conn, json.dumps({"command": "CONNECTION_REFUSED"}).encode(self.ENCODING))
+                conn.close()
 
     def send_all(self, command: str, **data: Any) -> None:
         """

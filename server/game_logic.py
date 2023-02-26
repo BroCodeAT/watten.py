@@ -4,6 +4,7 @@ import time
 from models import GameData, CardBase, PlayerData
 from server_utils import check_available, check_winner
 from server_network import NetworkServer
+from database import Database
 
 
 class GameLogic:
@@ -56,7 +57,8 @@ class GameLogic:
         auto_setup : bool (default: True)
             If the setup method should start automatically
         """
-        self.server = NetworkServer()
+        self.db = Database()
+        self.server = NetworkServer(self.db)
         self.game_data = GameData()
 
         if auto_setup:

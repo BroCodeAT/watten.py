@@ -1,5 +1,5 @@
 import sys
-import argon2
+import bcrypt
 import pygame
 from client_models import TextInput
 
@@ -81,5 +81,5 @@ def load_singe_card(card_id: int) -> pygame.Surface:
 
 
 def get_hashed_password(clear_password: str) -> bytes:
-    hashed_password = argon2.hash_password(bytes(clear_password,'utf-8'))
+    hashed_password = bcrypt.hashpw(clear_password.encode('utf-8'), bcrypt.gensalt())
     return hashed_password
