@@ -151,6 +151,8 @@ class ClientLogic:
                     conn = self.client.server_connect(self.game_data.username, self.game_data.password_inp.text)
                     if conn is False:
                         self.game_data.username = ""
+                        self.game_data.start_button.selected = False
+                        self.game_data.start_button.click = False
                     else:
                         self.background = pygame.image.load(r"assets\images\game\background.png")
                         # window = Window.from_display_module()

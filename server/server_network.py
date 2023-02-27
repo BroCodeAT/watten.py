@@ -127,23 +127,22 @@ class NetworkServer:
         None
         """
         self.conn.listen(4)
-        #i=0
-        for i in range(amount):
+
+        while len(self.clients) < amount:
+            name = ""
             conn, addr = self.conn.accept()
 
             login_crerdentials: dict = json.loads(self.recv(conn).decode(self.ENCODING))
             name = login_crerdentials.get("user")
 
-            while name in self.clients:
+            if name in self.clients:
                 self.send(conn, json.dumps({"command": "CONNECTION_REFUSED"}).encode(self.ENCODING))
                 conn.close()
-                conn, addr = self.conn.accept()
-                name = self.recv(conn).decode(self.ENCODING)
             
             #checking if the user exists and if the password is correct
-            if self.db.verify_user(name, login_crerdentials.get("password")):
+            elif self.db.verify_user(name, login_crerdentials.get("password")):
                 self.clients[name] = ClientData.new_conn(name, conn, addr)
-                print(f"[{'CONNECTION':<10}] {name} connected to the Game {i + 1}/{amount} ({addr[0]}:{addr[1]})")
+                print(f"[{'CONNECTION':<10}] {name} connected to the Game {len(self.clients)}/{amount} ({addr[0]}:{addr[1]})")
                 self.send_to("CONNECTED", name)
             else:
                 self.send(conn, json.dumps({"command": "CONNECTION_REFUSED"}).encode(self.ENCODING))
